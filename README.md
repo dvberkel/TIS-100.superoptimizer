@@ -1,7 +1,11 @@
 # TIS-100.superoptimizer
-Super-optimization for TIS-100 game
+Super-optimization for [TIS-100][tis-100] game.
 
-## TIS-100
+## Goal
+This repository contains code that attempts to super-optimize certain
+programming tasks for TIS-100.
+
+### TIS-100
 Developed by [Zachary Barth][zachary] under the banner of
 [Zachtronics Industries][zachtronics], [TIS-100][tis-100] is a
 
@@ -9,7 +13,7 @@ Developed by [Zachary Barth][zachary] under the banner of
 > repair the TIS-100 and unlock its secrets. It’s the assembly language
 > programming game you never asked for!
 
-## Super-optimization
+### Super-optimization
 Wikipedia defines [super-optimization][] as
 
 > Superoptimization is the task of finding the optimal code sequence for a
