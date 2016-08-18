@@ -1,0 +1,16 @@
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
+sudo: false
+script:
+  - cargo build --verbose
+  - cargo test --verbose
+  - cargo doc
+after_success: |
+  [ $TRAVIS_BRANCH = master ] &&
+  bash deploy-documentation.sh
+env:
+  global:
+    - secure: mfrSkoaOCo+85cMX3Y84j/5vzFgB0IiemArye/Soby0nflguaRRxvhD0j1wxZCQUA/YhnweWZVAPn22BstgBaEpITSQMBZqjRKFW5LJrYy/VHzqvQRH8ZtX8Merlk5Grv3g+T0gbzWVBGmdm7RobQrTq/OOJFN7+wkoxIqhx9d/j0iutYoIjfKlEzdZIzKjOurHQr1DbyQVJ05Ah2FADpoKa/v+o9QKD3c7jpghP35tApUGZRSil6xNqOt04mrqry3zjJUxqi0O48GObtOm4PvimfeJCnce6lYg01QKQ3vSrHl5vFUXI2SgzR1NeOLy01zG2G/XBoDpz4aiTMZ1if5Zh5WLd4gcpotNZHFQ/xxOlv/MTC45JxUdUop9ks18YvfwUz+fHQVbQwp3v9daNEEwUT3MNa7sSjy1O8oKEmNwyJVngBKy17EpnVR/sMJedOvS+17JpwrpTIssA2/S0EmCfdgjc6WfGUb/lx0+YCMqyizZu+IRQuElJs5gTjVdO+aRqS3tlMUFDK14IxEaBDxyXuOjZ6GZFWy+1HNgXgF/RBWMWV/mBqyyQIcm/AvW+fvT2SHq2MJ7hQCpJ5Lu4sxNYnrlU6s0dRI/W6qVKUB1SyyjwP0lJRhsSJgDJLxotSXQKhViIO4NzdJqSrMljBRybDMbCNbWqQiWGfMGlwwE=
