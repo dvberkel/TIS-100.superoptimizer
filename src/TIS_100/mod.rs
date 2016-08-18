@@ -30,8 +30,8 @@ pub enum Instruction {
     MOV(Source, Destination),
     SWP,
     SAV,
-    ADD(Destination),
-    SUB(Destination),
+    ADD(Source),
+    SUB(Source),
 }
 
 /// Source are either ports, registers or literals
@@ -45,8 +45,7 @@ pub enum Source {
 /// Destination are either ports or registers
 pub enum Destination {
     NIL,
-    ACC,
-    Literal(i32)
+    ACC
 }
 
 impl Node {
@@ -98,11 +97,11 @@ impl Node {
         Node { acc: self.acc, bac: self.acc }
     }
 
-    pub fn add(&self, source: Destination) -> Node{
+    pub fn add(&self, source: Source) -> Node{
         let value: i32 = match source {
-            Destination::NIL => 0,
-            Destination::ACC => self.acc,
-            Destination::Literal(value) => value
+            Source::NIL => 0,
+            Source::ACC => self.acc,
+            Source::Literal(value) => value
         };
 
         self.add_value(value)
@@ -112,11 +111,11 @@ impl Node {
         Node { acc: self.acc + value, bac: self.bac }
     }
 
-    pub fn subtract(&self, source: Destination) -> Node {
+    pub fn subtract(&self, source: Source) -> Node {
         let value: i32 = match source {
-            Destination::NIL => 0,
-            Destination::ACC => self.acc,
-            Destination::Literal(value) => value
+            Source::NIL => 0,
+            Source::ACC => self.acc,
+            Source::Literal(value) => value
         };
 
         self.subtract_value(value)
@@ -213,7 +212,7 @@ mod tests {
     #[test]
     fn node_should_execute_ADD_from_Literal_correctly() {
         let node: Node = Node::with(1, 0);
-        let instruction: Instruction = Instruction::ADD(Destination::Literal(1));
+        let instruction: Instruction = Instruction::ADD(Source::Literal(1));
 
         let next: Node = node.execute(instruction);
 
@@ -223,7 +222,7 @@ mod tests {
     #[test]
     fn node_should_execute_SUB_from_Literal_correctly() {
         let node: Node = Node::with(2, 0);
-        let instruction: Instruction = Instruction::SUB(Destination::Literal(1));
+        let instruction: Instruction = Instruction::SUB(Source::Literal(1));
 
         let next: Node = node.execute(instruction);
 
