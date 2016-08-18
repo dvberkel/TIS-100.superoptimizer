@@ -5,16 +5,6 @@
 //!
 //! The manual can be found [online](https://www.vidarholen.net/contents/junk/files/TIS-100%20Reference%20Manual.pdf).
 //! Another useful resource is the unofficial [TIS-100 Hackers Guide](https://alandesmet.github.io/TIS-100-Hackers-Guide/).
-//!
-//! # Examples
-//!
-//! ```
-//! let node: Node = Node:new();
-//! let last: Node = node
-//!                  .execute(Instruction::Add(Source::Literal(1)))
-//!                  .execute(Instruction::Add(Source::ACC));
-//! println!("2 times 1 equals {}", last.acc);
-//! ```
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by executing an `Instruction` on it.
