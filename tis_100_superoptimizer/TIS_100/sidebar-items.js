@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Destination","`Destination` are either ports or registers"],["Instruction","`Instruction`s are executed by a `Node`."],["Source","`Source` are either ports, registers or literals"]],"struct":[["Node","A `Node` models the basic execution node in TIS-100. You change a node state by executing an `Instruction` on it."]]});

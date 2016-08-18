@@ -1,6 +1,0 @@
-[package]
-name = "tis_100_superoptimizer"
-version = "0.1.0"
-authors = ["Daan van Berkel <daan.v.berkel.1980@gmail.com>"]
-
-[dependencies]
