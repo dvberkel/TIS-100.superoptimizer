@@ -31,7 +31,8 @@
 pub struct Node {
     /// The accumulator for the basic execution node.
     pub acc: i32,
-    bac: i32
+    bac: i32,
+    pc: isize,
 }
 
 /// `Instruction`s are executed by a `Node`.
@@ -76,12 +77,27 @@ pub enum Destination {
 impl Node {
     /// Create a `Node` with defaults for accumulator and backup registers
     pub fn new() -> Node {
-        Node { acc: 0, bac: 0 }
+        Node { acc: 0, bac: 0, pc: 0 }
     }
 
     /// Create a `Node` with prescribed values for accumulator and backup registers
-    pub fn with(acc: i32, bac: i32) -> Node {
-        Node { acc: acc, bac: bac }
+    pub fn with(acc: i32, bac: i32, pc: isize) -> Node {
+        Node { acc: acc, bac: bac, pc: pc }
+    }
+
+    /// Create a `Node` from self with the program counter incremented
+    pub fn increment_pc(&self) -> Node {
+        Node { pc: self.pc + 1, .. *self }
+    }
+
+    /// Create a `Node` from self with a prescribed accumulator register value
+    pub fn set_acc(&self, acc: i32) -> Node {
+        Node { acc: acc, .. *self }
+    }
+
+    /// Create a `Node` from self with a prescribed backup register value
+    pub fn set_bac(&self, bac: i32) -> Node {
+        Node { bac: bac, .. *self }
     }
 
     /// Execute the `instruction` on this `Node`. Returns a `Node` that reflects
@@ -98,7 +114,7 @@ impl Node {
     }
 
     fn nop(&self) -> Node {
-        Node { acc: self.acc, bac: self.bac }
+        self.increment_pc()
     }
 
     fn mov(&self, source: Source, destination: Destination) -> Node {
@@ -113,17 +129,20 @@ impl Node {
 
     fn move_value(&self, value: i32, destination: Destination) -> Node {
         match destination {
-            Destination::Register(Register::ACC) => Node { acc: value, bac: self.bac },
+            Destination::Register(Register::ACC) => self.increment_pc().set_acc(value),
             _ => self.nop(),
         }
     }
 
     fn swap(&self) -> Node {
-        Node { acc: self.bac, bac: self.acc }
+        let acc: i32 = self.acc;
+        let bac: i32 = self.bac;
+
+        self.increment_pc().set_acc(bac).set_bac(acc)
     }
 
     fn save(&self) -> Node {
-        Node { acc: self.acc, bac: self.acc }
+        self.increment_pc().set_bac(self.acc)
     }
 
     fn add(&self, source: Source) -> Node{
@@ -137,7 +156,7 @@ impl Node {
     }
 
     fn add_value(&self, value: i32) -> Node {
-        Node { acc: self.acc + value, bac: self.bac }
+        self.increment_pc().set_acc(self.acc + value)
     }
 
     fn subtract(&self, source: Source) -> Node {
@@ -151,7 +170,7 @@ impl Node {
     }
 
     fn subtract_value(&self, value: i32) -> Node {
-        Node { acc: self.acc - value, bac: self.bac }
+        self.increment_pc().set_acc(self.acc - value)
     }
 }
 
@@ -178,85 +197,85 @@ mod tests {
 
     #[test]
     fn node_should_execute_NOP_correctly() {
-        let node: Node = Node::with(1, 0);
+        let node: Node = Node::with(1, 0, 0);
         let instruction: Instruction = Instruction::NOP;
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0), next);
+        assert_eq!(Node::with(1, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_MOV_from_NIL_to_NIL_correctly() {
-        let node: Node = Node::with(1, 0);
+        let node: Node = Node::with(1, 0, 0);
         let instruction: Instruction = Instruction::MOV(Source::Register(Register::NIL),
                                                         Destination::Register(Register::NIL));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0), next);
+        assert_eq!(Node::with(1, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_MOV_from_ACC_to_ACC_correctly() {
-        let node: Node = Node::with(2, 1);
+        let node: Node = Node::with(2, 1, 0);
         let instruction: Instruction = Instruction::MOV(Source::Register(Register::ACC),
                                                         Destination::Register(Register::ACC));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(2, 1), next);
+        assert_eq!(Node::with(2, 1, 1), next);
     }
 
     #[test]
     fn node_should_execute_MOV_from_Literal_to_ACC_correctly() {
-        let node: Node = Node::new();
+        let node: Node = Node::with(0, 0, 0);
         let instruction: Instruction = Instruction::MOV(Source::Literal(1),
                                                         Destination::Register(Register::ACC));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0), next);
+        assert_eq!(Node::with(1, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_SWP_correctly() {
-        let node: Node = Node::with(1, 0);
+        let node: Node = Node::with(1, 0, 0);
         let instruction: Instruction = Instruction::SWP;
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(0, 1), next);
+        assert_eq!(Node::with(0, 1, 1), next);
     }
 
     #[test]
     fn node_should_execute_SAV_correctly() {
-        let node: Node = Node::with(1,0);
+        let node: Node = Node::with(1, 0, 0);
         let instruction: Instruction = Instruction::SAV;
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 1), next);
+        assert_eq!(Node::with(1, 1, 1), next);
     }
 
     #[test]
     fn node_should_execute_ADD_from_Literal_correctly() {
-        let node: Node = Node::with(1, 0);
+        let node: Node = Node::with(1, 0, 0);
         let instruction: Instruction = Instruction::ADD(Source::Literal(1));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(2, 0), next);
+        assert_eq!(Node::with(2, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_SUB_from_Literal_correctly() {
-        let node: Node = Node::with(2, 0);
+        let node: Node = Node::with(2, 0, 0);
         let instruction: Instruction = Instruction::SUB(Source::Literal(1));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0), next);
+        assert_eq!(Node::with(1, 0, 1), next);
     }
 }
 
