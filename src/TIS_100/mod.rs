@@ -29,6 +29,7 @@
 /// by executing an `Instruction` on it.
 #[derive(Debug)]
 pub struct Node {
+    /// The accumulator for the basic execution node.
     pub acc: i32,
     bac: i32
 }
@@ -73,14 +74,18 @@ pub enum Destination {
 }
 
 impl Node {
+    /// Create a `Node` with defaults for accumulator and backup registers
     pub fn new() -> Node {
         Node { acc: 0, bac: 0 }
     }
 
+    /// Create a `Node` with prescribed values for accumulator and backup registers
     pub fn with(acc: i32, bac: i32) -> Node {
         Node { acc: acc, bac: bac }
     }
 
+    /// Execute the `instruction` on this `Node`. Returns a `Node` that reflects
+    /// the changes the `instruction` would have on this `Node`.
     pub fn execute(&self, instruction: Instruction) -> Node {
         match instruction {
             Instruction::NOP => self.nop(),
