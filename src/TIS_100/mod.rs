@@ -140,8 +140,9 @@ mod tests {
     #[test]
     fn node_should_start_with_backup_zero() {
         let node: Node = Node::new();
+        let instruction: Instruction = Instruction::SWP;
 
-        let next: Node = node.swap();
+        let next: Node = node.execute(instruction);
 
         assert_eq!(0, next.acc);
     }
