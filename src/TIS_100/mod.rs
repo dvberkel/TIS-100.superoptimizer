@@ -82,12 +82,17 @@ impl Node {
 
     /// Create a `Node` with prescribed values for accumulator and backup registers
     pub fn with(acc: i32, bac: i32, pc: isize) -> Node {
-        Node { acc: acc, bac: bac, pc: pc }
+        Node::new().set_acc(acc).set_bac(bac).set_pc(pc)
     }
 
     /// Create a `Node` from self with the program counter incremented
     pub fn increment_pc(&self) -> Node {
         Node { pc: self.pc + 1, .. *self }
+    }
+
+    /// Create a `Node` from self with a prescribed program counter value
+    pub fn set_pc(&self, pc: isize) -> Node {
+        Node { pc: pc, .. *self }
     }
 
     /// Create a `Node` from self with a prescribed accumulator register value
