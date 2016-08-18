@@ -5,6 +5,25 @@
 //!
 //! The manual can be found [online](https://www.vidarholen.net/contents/junk/files/TIS-100%20Reference%20Manual.pdf).
 //! Another useful resource is the unofficial [TIS-100 Hackers Guide](https://alandesmet.github.io/TIS-100-Hackers-Guide/).
+//!
+//! # Examples
+//! Here we take a node and execute some instructions and check if double 1 has
+//! the expected result. 
+//!
+//! ```rust
+//! extern crate tis_100_superoptimizer;
+//!
+//! use tis_100_superoptimizer::TIS_100::{Node,Instruction,Source,Destination};
+//!
+//! fn main() {
+//!     let node: Node = Node::new();
+//!     let last: Node = node
+//!         .execute(Instruction::MOV(Source::Literal(1), Destination::ACC))
+//!         .execute(Instruction::ADD(Source::ACC));
+//!
+//!     assert_eq!(2, last.acc);
+//! }
+//! ```
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by executing an `Instruction` on it.
