@@ -24,4 +24,4 @@
 //! > single, loop-free sequence of instructions
 
 #[allow(non_snake_case)]
-mod TIS_100;
+pub mod TIS_100;
