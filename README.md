@@ -1,4 +1,4 @@
-# TIS-100.superoptimizer
+# TIS-100.superoptimizer [![Build Status](https://travis-ci.org/dvberkel/TIS-100.superoptimizer.svg?branch=master)](https://travis-ci.org/dvberkel/TIS-100.superoptimizer)
 Super-optimization for [TIS-100][tis-100] game.
 
 ## Goal
