@@ -1,5 +1,5 @@
 [package]
-name = "tis_100_superoptimizer"
+name = "tis-100-superoptimizer"
 version = "0.1.0"
 authors = ["Daan van Berkel <daan.v.berkel.1980@gmail.com>"]
 
