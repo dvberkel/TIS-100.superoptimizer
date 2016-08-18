@@ -68,11 +68,11 @@ impl Node {
         }
     }
 
-    pub fn nop(&self) -> Node {
+    fn nop(&self) -> Node {
         Node { acc: self.acc, bac: self.bac }
     }
 
-    pub fn mov(&self, source: Source, destination: Destination) -> Node {
+    fn mov(&self, source: Source, destination: Destination) -> Node {
         let value: i32 = match source {
             Source::NIL => 0,
             Source::ACC => self.acc,
@@ -82,22 +82,22 @@ impl Node {
         self.move_value(value, destination)
     }
 
-    pub fn move_value(&self, value: i32, destination: Destination) -> Node {
+    fn move_value(&self, value: i32, destination: Destination) -> Node {
         match destination {
             Destination::ACC => Node { acc: value, bac: self.bac },
             _ => self.nop()
         }
     }
 
-    pub fn swap(&self) -> Node {
+    fn swap(&self) -> Node {
         Node { acc: self.bac, bac: self.acc }
     }
 
-    pub fn save(&self) -> Node {
+    fn save(&self) -> Node {
         Node { acc: self.acc, bac: self.acc }
     }
 
-    pub fn add(&self, source: Source) -> Node{
+    fn add(&self, source: Source) -> Node{
         let value: i32 = match source {
             Source::NIL => 0,
             Source::ACC => self.acc,
@@ -107,11 +107,11 @@ impl Node {
         self.add_value(value)
     }
 
-    pub fn add_value(&self, value: i32) -> Node {
+    fn add_value(&self, value: i32) -> Node {
         Node { acc: self.acc + value, bac: self.bac }
     }
 
-    pub fn subtract(&self, source: Source) -> Node {
+    fn subtract(&self, source: Source) -> Node {
         let value: i32 = match source {
             Source::NIL => 0,
             Source::ACC => self.acc,
@@ -121,7 +121,7 @@ impl Node {
         self.subtract_value(value)
     }
 
-    pub fn subtract_value(&self, value: i32) -> Node {
+    fn subtract_value(&self, value: i32) -> Node {
         Node { acc: self.acc - value, bac: self.bac }
     }
 }
