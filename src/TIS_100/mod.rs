@@ -27,21 +27,12 @@
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by executing an `Instruction` on it.
-#[derive(Debug)]
+#[derive(Debug,PartialEq,Eq)]
 pub struct Node {
     /// The accumulator for the basic execution node.
     pub acc: i32,
     bac: i32
 }
-
-impl PartialEq for Node {
-    /// Node are equal when they have the same internal state
-    fn eq(&self, other: &Node) -> bool {
-        self.acc == other.acc && self.bac == other.bac
-    }
-}
-
-impl Eq for Node {}
 
 /// `Instruction`s are executed by a `Node`.
 pub enum Instruction {
