@@ -13,13 +13,13 @@
 //! ```rust
 //! extern crate tis_100_superoptimizer;
 //!
-//! use tis_100_superoptimizer::TIS_100::{Node,Instruction,Source,Destination};
+//! use tis_100_superoptimizer::TIS_100::{Node,Instruction,Source,Destination,Register};
 //!
 //! fn main() {
 //!     let node: Node = Node::new();
 //!     let last: Node = node
-//!         .execute(Instruction::MOV(Source::Literal(1), Destination::ACC))
-//!         .execute(Instruction::ADD(Source::ACC));
+//!         .execute(Instruction::MOV(Source::Literal(1), Destination::Register(Register::ACC)))
+//!         .execute(Instruction::ADD(Source::Register(Register::ACC)));
 //!
 //!     assert_eq!(2, last.acc);
 //! }
@@ -61,16 +61,25 @@ pub enum Instruction {
 
 /// `Source` are either ports, registers or literals
 pub enum Source {
-    NIL,
-    ACC,
+    /// A register
+    Register(Register),
+    /// A literal value
     Literal(i32)
+}
+
+/// Different types of Registers known in TIS-100
+pub enum Register {
+    /// the NIL register, reading from it provides with zero
+    NIL,
+    /// The accumulator
+    ACC,
 }
 
 
 /// `Destination` are either ports or registers
 pub enum Destination {
-    NIL,
-    ACC
+    /// A register
+    Register(Register),
 }
 
 impl Node {
@@ -103,9 +112,9 @@ impl Node {
 
     fn mov(&self, source: Source, destination: Destination) -> Node {
         let value: i32 = match source {
-            Source::NIL => 0,
-            Source::ACC => self.acc,
-            Source::Literal(value) => value
+            Source::Register(Register::NIL) => 0,
+            Source::Register(Register::ACC) => self.acc,
+            Source::Literal(value) => value,
         };
 
         self.move_value(value, destination)
@@ -113,8 +122,8 @@ impl Node {
 
     fn move_value(&self, value: i32, destination: Destination) -> Node {
         match destination {
-            Destination::ACC => Node { acc: value, bac: self.bac },
-            _ => self.nop()
+            Destination::Register(Register::ACC) => Node { acc: value, bac: self.bac },
+            _ => self.nop(),
         }
     }
 
@@ -128,9 +137,9 @@ impl Node {
 
     fn add(&self, source: Source) -> Node{
         let value: i32 = match source {
-            Source::NIL => 0,
-            Source::ACC => self.acc,
-            Source::Literal(value) => value
+            Source::Register(Register::NIL) => 0,
+            Source::Register(Register::ACC) => self.acc,
+            Source::Literal(value) => value,
         };
 
         self.add_value(value)
@@ -142,9 +151,9 @@ impl Node {
 
     fn subtract(&self, source: Source) -> Node {
         let value: i32 = match source {
-            Source::NIL => 0,
-            Source::ACC => self.acc,
-            Source::Literal(value) => value
+            Source::Register(Register::NIL) => 0,
+            Source::Register(Register::ACC) => self.acc,
+            Source::Literal(value) => value,
         };
 
         self.subtract_value(value)
@@ -189,8 +198,8 @@ mod tests {
     #[test]
     fn node_should_execute_MOV_from_NIL_to_NIL_correctly() {
         let node: Node = Node::with(1, 0);
-        let instruction: Instruction = Instruction::MOV(Source::NIL,
-                                                        Destination::NIL);
+        let instruction: Instruction = Instruction::MOV(Source::Register(Register::NIL),
+                                                        Destination::Register(Register::NIL));
 
         let next: Node = node.execute(instruction);
 
@@ -200,8 +209,8 @@ mod tests {
     #[test]
     fn node_should_execute_MOV_from_ACC_to_ACC_correctly() {
         let node: Node = Node::with(2, 1);
-        let instruction: Instruction = Instruction::MOV(Source::ACC,
-                                                        Destination::ACC);
+        let instruction: Instruction = Instruction::MOV(Source::Register(Register::ACC),
+                                                        Destination::Register(Register::ACC));
 
         let next: Node = node.execute(instruction);
 
@@ -212,7 +221,7 @@ mod tests {
     fn node_should_execute_MOV_from_Literal_to_ACC_correctly() {
         let node: Node = Node::new();
         let instruction: Instruction = Instruction::MOV(Source::Literal(1),
-                                                        Destination::ACC);
+                                                        Destination::Register(Register::ACC));
 
         let next: Node = node.execute(instruction);
 
