@@ -1,4 +1,4 @@
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 //! [TIS-100.superoptimizer](https://github.com/dvberkel/TIS-100.superoptimizer) is a
 //!
 //! > Supertoptimization for TIS-100 game
