@@ -25,7 +25,7 @@
 //! }
 //! ```
 
-use std::fmt::{Debug,Formatter,Result};
+use std::fmt::{Debug,Formatter,Error};
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by executing an `Instruction` on it.
@@ -63,7 +63,7 @@ impl PartialEq for Program {
 impl Eq for Program {}
 
 impl Debug for Program {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
         let Program(ref instructions) = *self;
         write!(f, "[{}:", instructions.len()).unwrap();
         for instruction in instructions {
