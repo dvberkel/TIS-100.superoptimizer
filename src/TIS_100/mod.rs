@@ -80,11 +80,6 @@ impl Node {
         Node { acc: 0, bac: 0, pc: 0 }
     }
 
-    /// Create a `Node` with prescribed values for accumulator and backup registers
-    pub fn with(acc: i32, bac: i32, pc: isize) -> Node {
-        Node::new().set_acc(acc).set_bac(bac).set_pc(pc)
-    }
-
     /// Create a `Node` from self with the program counter incremented
     pub fn increment_pc(&self) -> Node {
         Node { pc: self.pc + 1, .. *self }
@@ -179,6 +174,10 @@ impl Node {
 mod tests {
     use super::*;
 
+    fn node_with(acc: i32, bac: i32, pc: isize) -> Node {
+        Node::new().set_acc(acc).set_bac(bac).set_pc(pc)
+    }
+
     #[test]
     fn node_should_start_with_accumulator_zero() {
         let node: Node = Node::new();
@@ -198,85 +197,85 @@ mod tests {
 
     #[test]
     fn node_should_execute_NOP_correctly() {
-        let node: Node = Node::with(1, 0, 0);
+        let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::NOP;
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_MOV_from_NIL_to_NIL_correctly() {
-        let node: Node = Node::with(1, 0, 0);
+        let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::MOV(Source::Register(Register::NIL),
                                                         Destination::Register(Register::NIL));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_MOV_from_ACC_to_ACC_correctly() {
-        let node: Node = Node::with(2, 1, 0);
+        let node: Node = Node::new().set_acc(2).set_bac(1);
         let instruction: Instruction = Instruction::MOV(Source::Register(Register::ACC),
                                                         Destination::Register(Register::ACC));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(2, 1, 1), next);
+        assert_eq!(node_with(2, 1, 1), next);
     }
 
     #[test]
     fn node_should_execute_MOV_from_Literal_to_ACC_correctly() {
-        let node: Node = Node::with(0, 0, 0);
+        let node: Node = Node::new();
         let instruction: Instruction = Instruction::MOV(Source::Literal(1),
                                                         Destination::Register(Register::ACC));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_SWP_correctly() {
-        let node: Node = Node::with(1, 0, 0);
+        let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::SWP;
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(0, 1, 1), next);
+        assert_eq!(node_with(0, 1, 1), next);
     }
 
     #[test]
     fn node_should_execute_SAV_correctly() {
-        let node: Node = Node::with(1, 0, 0);
+        let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::SAV;
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 1, 1), next);
+        assert_eq!(node_with(1, 1, 1), next);
     }
 
     #[test]
     fn node_should_execute_ADD_from_Literal_correctly() {
-        let node: Node = Node::with(1, 0, 0);
+        let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::ADD(Source::Literal(1));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(2, 0, 1), next);
+        assert_eq!(node_with(2, 0, 1), next);
     }
 
     #[test]
     fn node_should_execute_SUB_from_Literal_correctly() {
-        let node: Node = Node::with(2, 0, 0);
+        let node: Node = Node::new().set_acc(2);
         let instruction: Instruction = Instruction::SUB(Source::Literal(1));
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(Node::with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1), next);
     }
 }
 
