@@ -479,7 +479,7 @@
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>::{<span class='ident'>Debug</span>,<span class='ident'>Formatter</span>,<span class='ident'>Error</span>};
 
 <span class='doccomment'>/// A `Node` models the basic execution node in TIS-100. You change a node state</span>
-<span class='doccomment'>/// by executing an `Instruction` on it.</span>
+<span class='doccomment'>/// by running `Program`s on it or executing an `Instruction` on it.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Node</span> {
     <span class='doccomment'>/// The accumulator for the basic execution node.</span>
@@ -535,7 +535,7 @@
     }
 }
 
-<span class='doccomment'>/// `Instruction`s are executed by a `Node`.</span>
+<span class='doccomment'>/// `Instruction`s are executed by a `Node`</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>,<span class='ident'>Clone</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Instruction</span> {
     <span class='doccomment'>/// Does nothing</span>
