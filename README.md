@@ -19,7 +19,13 @@ Wikipedia defines [super-optimization][] as
 > Superoptimization is the task of finding the optimal code sequence for a
 > single, loop-free sequence of instructions 
 
+## Documentation
+The [documentation][] is hosted as a [GitHub pages][gh-pages] and is
+automatically updated with every push to the repository.
+
 [zachary]: https://en.wikipedia.org/wiki/Zachary_Barth
 [zachtronics]: http://www.zachtronics.com/
 [tis-100]: http://www.zachtronics.com/tis-100/
 [super-optimization]: https://en.wikipedia.org/wiki/Superoptimization
+[documentation]: https://dvberkel.github.io/TIS-100.superoptimizer 
+[gh-pages]: https://pages.github.com/
