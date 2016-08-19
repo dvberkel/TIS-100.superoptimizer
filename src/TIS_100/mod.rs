@@ -25,6 +25,8 @@
 //! }
 //! ```
 
+use std::fmt::{Debug,Formatter,Result};
+
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by executing an `Instruction` on it.
 #[derive(Debug,PartialEq,Eq)]
@@ -33,9 +35,57 @@ pub struct Node {
     pub acc: i32,
     bac: i32,
     pc: isize,
+    program: Program,
+}
+
+/// A `Program` is a sequence of `Instruction`s
+pub struct Program(Vec<Instruction>);
+
+impl PartialEq for Program {
+    fn eq(&self, other: &Program) -> bool {
+        let Program(ref self_instructions) = *self;
+        let Program(ref other_instructions) = *other;
+        if self_instructions.len() == other_instructions.len() {
+            for index in 0..(self_instructions.len()) {
+                let ref self_instruction = self_instructions[index];
+                let ref other_instruction = other_instructions[index];
+                if self_instruction != other_instruction {
+                    return false
+                }
+            }
+            true
+        } else {
+            false
+        }
+    }
+}
+
+impl Eq for Program {}
+
+impl Debug for Program {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        let Program(ref instructions) = *self;
+        write!(f, "[{}:", instructions.len()).unwrap();
+        for instruction in instructions {
+            write!(f, " {:?}", instruction).unwrap();
+        }
+        write!(f, "]")
+    }
+}
+
+impl Clone for Program {
+    fn clone(&self) -> Program {
+        let mut clone_instructions: Vec<Instruction> = vec![];
+        let Program(ref self_instructions) = *self;
+        for ref mut instruction in self_instructions {
+            clone_instructions.push(instruction.clone());
+        }
+        Program(clone_instructions)
+    }
 }
 
 /// `Instruction`s are executed by a `Node`.
+#[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Instruction {
     /// Does nothing
     NOP,
@@ -52,6 +102,7 @@ pub enum Instruction {
 }
 
 /// `Source` are either ports, registers or literals
+#[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Source {
     /// A register
     Register(Register),
@@ -60,6 +111,7 @@ pub enum Source {
 }
 
 /// Different types of Registers known in TIS-100
+#[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Register {
     /// the NIL register, reading from it provides with zero
     NIL,
@@ -69,6 +121,7 @@ pub enum Register {
 
 
 /// `Destination` are either ports or registers
+#[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Destination {
     /// A register
     Register(Register),
@@ -77,27 +130,27 @@ pub enum Destination {
 impl Node {
     /// Create a `Node` with defaults for accumulator and backup registers
     pub fn new() -> Node {
-        Node { acc: 0, bac: 0, pc: 0 }
+        Node { acc: 0, bac: 0, pc: 0, program: Program(vec![]) }
     }
 
     /// Create a `Node` from self with the program counter incremented
     pub fn increment_pc(&self) -> Node {
-        Node { pc: self.pc + 1, .. *self }
+        Node { pc: self.pc + 1, program: self.program.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed program counter value
     pub fn set_pc(&self, pc: isize) -> Node {
-        Node { pc: pc, .. *self }
+        Node { pc: pc, program: self.program.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed accumulator register value
     pub fn set_acc(&self, acc: i32) -> Node {
-        Node { acc: acc, .. *self }
+        Node { acc: acc, program: self.program.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed backup register value
     pub fn set_bac(&self, bac: i32) -> Node {
-        Node { bac: bac, .. *self }
+        Node { bac: bac, program: self.program.clone(), .. *self }
     }
 
     /// Execute the `instruction` on this `Node`. Returns a `Node` that reflects
@@ -276,6 +329,21 @@ mod tests {
         let next: Node = node.execute(instruction);
 
         assert_eq!(node_with(1, 0, 1), next);
+    }
+
+    #[test]
+    fn programs_should_differ_when_different_size() {
+        assert_eq!(false, Program(vec![]) == Program(vec![Instruction::SAV]));
+    }
+
+    #[test]
+    fn programs_should_differ_when_different_instructions() {
+        assert_eq!(false, Program(vec![Instruction::SWP]) == Program(vec![Instruction::SAV]));
+    }
+
+    #[test]
+    fn programs_should_equal_with_same_instructions() {
+        assert_eq!(Program(vec![Instruction::SAV]), Program(vec![Instruction::SAV]));
     }
 }
 
