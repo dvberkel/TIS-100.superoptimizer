@@ -34,7 +34,7 @@ pub struct Node {
     /// The accumulator for the basic execution node.
     pub acc: i32,
     bac: i32,
-    pc: isize,
+    pc: usize,
     program: Program,
 }
 
@@ -127,10 +127,51 @@ pub enum Destination {
     Register(Register),
 }
 
+
+/// The `Status` a `Program` run on a certain `Node`.
+pub enum Status {
+    /// a successful run of the program
+    Successful(Node),
+    /// an unsuccessful run of the program, because of a deadlock. I.e. 
+    Deadlock(Node),
+}
+
 impl Node {
     /// Create a `Node` with defaults for accumulator and backup registers
     pub fn new() -> Node {
         Node { acc: 0, bac: 0, pc: 0, program: Program(vec![]) }
+    }
+
+    /// Loads a program in this `Node`
+    pub fn load(&self, program: Program) -> Node {
+        Node { program: program.clone(), .. *self }
+    }
+
+    /// Run the loaded program, returning an calculation state
+    pub fn run(&self) -> Status {
+        let mut node = Node { program: self.program.clone(), .. *self };
+
+        loop {
+            match node.fetch_instruction() {
+                Some(instruction) => {
+                    node = node.execute(instruction);
+                }
+                None => {
+                    break
+                }
+            }
+        }
+
+        Status::Successful(Node { program: node.program.clone(), .. node })
+    }
+
+    fn fetch_instruction(&self) -> Option<Instruction> {
+        let Program(ref instructions) = self.program;
+        if self.pc < instructions.len() {
+            Some(instructions[self.pc].clone())
+        } else {
+            None
+        }
     }
 
     /// Create a `Node` from self with the program counter incremented
@@ -139,7 +180,7 @@ impl Node {
     }
 
     /// Create a `Node` from self with a prescribed program counter value
-    pub fn set_pc(&self, pc: isize) -> Node {
+    pub fn set_pc(&self, pc: usize) -> Node {
         Node { pc: pc, program: self.program.clone(), .. *self }
     }
 
@@ -227,7 +268,7 @@ impl Node {
 mod tests {
     use super::*;
 
-    fn node_with(acc: i32, bac: i32, pc: isize) -> Node {
+    fn node_with(acc: i32, bac: i32, pc: usize) -> Node {
         Node::new().set_acc(acc).set_bac(bac).set_pc(pc)
     }
 
@@ -344,6 +385,22 @@ mod tests {
     #[test]
     fn programs_should_equal_with_same_instructions() {
         assert_eq!(Program(vec![Instruction::SAV]), Program(vec![Instruction::SAV]));
+    }
+
+    #[test]
+    fn node_should_execute_program_correctly() {
+        let program: Program = Program(vec![// calculate 4 * source - 1
+            Instruction::MOV(Source::Literal(1), Destination::Register(Register::ACC)),
+            Instruction::ADD(Source::Register(Register::ACC)),
+            Instruction::ADD(Source::Register(Register::ACC)),
+            Instruction::SUB(Source::Literal(1))
+        ]);
+        let node: Node = Node::new().load(program);
+
+        match node.run() {
+            Status::Successful(_) => assert!(true),
+            Status::Deadlock(_) => assert!(false),
+        }
     }
 }
 
