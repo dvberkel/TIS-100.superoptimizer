@@ -28,7 +28,7 @@
 use std::fmt::{Debug,Formatter,Error};
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
-/// by executing an `Instruction` on it.
+/// by running `Program`s on it or executing an `Instruction` on it.
 #[derive(Debug,PartialEq,Eq)]
 pub struct Node {
     /// The accumulator for the basic execution node.
@@ -84,7 +84,7 @@ impl Clone for Program {
     }
 }
 
-/// `Instruction`s are executed by a `Node`.
+/// `Instruction`s are executed by a `Node`
 #[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Instruction {
     /// Does nothing
