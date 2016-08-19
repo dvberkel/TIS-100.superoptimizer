@@ -132,12 +132,12 @@ pub enum Destination {
 pub enum Status {
     /// a successful run of the program
     Successful(Node),
-    /// an unsuccessful run of the program, because of a deadlock. I.e. 
+    /// an unsuccessful run of the program, because of a deadlock.
     Deadlock(Node),
 }
 
 impl Node {
-    /// Create a `Node` with defaults for accumulator and backup registers
+    /// Create a `Node` with defaults for accumulator, backup registers, program counter and program
     pub fn new() -> Node {
         Node { acc: 0, bac: 0, pc: 0, program: Program(vec![]) }
     }
