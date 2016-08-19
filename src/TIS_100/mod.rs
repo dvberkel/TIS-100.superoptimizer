@@ -123,13 +123,17 @@ impl Node {
     }
 
     fn mov(&self, source: Source, destination: Destination) -> Node {
-        let value: i32 = match source {
+        let value: i32 = self.value_from(source);
+
+        self.move_value(value, destination)
+    }
+
+    fn value_from(&self, source: Source) -> i32 {
+        match source {
             Source::Register(Register::NIL) => 0,
             Source::Register(Register::ACC) => self.acc,
             Source::Literal(value) => value,
-        };
-
-        self.move_value(value, destination)
+        }
     }
 
     fn move_value(&self, value: i32, destination: Destination) -> Node {
@@ -151,11 +155,7 @@ impl Node {
     }
 
     fn add(&self, source: Source) -> Node{
-        let value: i32 = match source {
-            Source::Register(Register::NIL) => 0,
-            Source::Register(Register::ACC) => self.acc,
-            Source::Literal(value) => value,
-        };
+        let value: i32 = self.value_from(source);
 
         self.add_value(value)
     }
@@ -165,11 +165,7 @@ impl Node {
     }
 
     fn subtract(&self, source: Source) -> Node {
-        let value: i32 = match source {
-            Source::Register(Register::NIL) => 0,
-            Source::Register(Register::ACC) => self.acc,
-            Source::Literal(value) => value,
-        };
+        let value: i32 = self.value_from(source);
 
         self.subtract_value(value)
     }
