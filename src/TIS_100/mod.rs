@@ -39,7 +39,7 @@ pub struct Node {
 }
 
 /// A `Program` is a sequence of `Instruction`s
-pub struct Program(Vec<Instruction>);
+pub struct Program(pub Vec<Instruction>);
 
 impl PartialEq for Program {
     fn eq(&self, other: &Program) -> bool {
