@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Source` enum in crate `tis_100_superoptimizer`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Source">
+    <meta name="description" content="API documentation for the Rust `Register` enum in crate `tis_100_superoptimizer`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Register">
 
-    <title>tis_100_superoptimizer::TIS_100::Source - Rust</title>
+    <title>tis_100_superoptimizer::TIS_100::Register - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a></p><script>window.sidebarCurrent = {name: 'Source', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a></p><script>window.sidebarCurrent = {name: 'Register', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -43,18 +43,18 @@
     </nav>
 
     <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a>::<wbr><a class='enum' href=''>Source</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a>::<wbr><a class='enum' href=''>Register</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-53' class='srclink' href='../../src/tis_100_superoptimizer/src/TIS_100/mod.rs.html#55-60' title='goto source code'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum Source {
-    Register(<a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Register.html' title='tis_100_superoptimizer::TIS_100::Register'>Register</a>),
-    Literal(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>),
-}</pre><div class='docblock'><p><code>Source</code> are either ports, registers or literals</p>
+               </span><a id='src-58' class='srclink' href='../../src/tis_100_superoptimizer/src/TIS_100/mod.rs.html#63-68' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum Register {
+    NIL,
+    ACC,
+}</pre><div class='docblock'><p>Different types of Registers known in TIS-100</p>
 </div><h2 class='variants'>Variants</h2>
-<span id='variant.Register' class='variant'><code>Register(<a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Register.html' title='tis_100_superoptimizer::TIS_100::Register'>Register</a>)</code></span><div class='docblock'><p>A register</p>
-</div><span id='variant.Literal' class='variant'><code>Literal(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>)</code></span><div class='docblock'><p>A literal value</p>
+<span id='variant.NIL' class='variant'><code>NIL</code></span><div class='docblock'><p>the NIL register, reading from it provides with zero</p>
+</div><span id='variant.ACC' class='variant'><code>ACC</code></span><div class='docblock'><p>The accumulator</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 
