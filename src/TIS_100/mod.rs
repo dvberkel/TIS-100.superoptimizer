@@ -175,22 +175,22 @@ impl Node {
     }
 
     /// Create a `Node` from self with the program counter incremented
-    pub fn increment_pc(&self) -> Node {
+    fn increment_pc(&self) -> Node {
         Node { pc: self.pc + 1, program: self.program.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed program counter value
-    pub fn set_pc(&self, pc: usize) -> Node {
+    fn set_pc(&self, pc: usize) -> Node {
         Node { pc: pc, program: self.program.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed accumulator register value
-    pub fn set_acc(&self, acc: i32) -> Node {
+    fn set_acc(&self, acc: i32) -> Node {
         Node { acc: acc, program: self.program.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed backup register value
-    pub fn set_bac(&self, bac: i32) -> Node {
+    fn set_bac(&self, bac: i32) -> Node {
         Node { bac: bac, program: self.program.clone(), .. *self }
     }
 
