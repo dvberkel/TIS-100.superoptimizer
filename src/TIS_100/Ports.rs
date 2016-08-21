@@ -3,12 +3,14 @@
 //! They can be used as a `Source` and `Destination` for certain `Instruction`s.
 
 /// A `Port` can be read from and write to
+#[derive(Debug,PartialEq,Eq)]
 pub struct Port {
     input: Vec<i32>,
     output: Vec<i32>,
 }
 
 /// The result of reading from a `Port`
+#[derive(Debug)]
 pub enum PortReadResult {
     /// Success
     Success(Port, i32),
@@ -50,7 +52,10 @@ mod tests {
         let port: Port = Port::new(vec![0, 1, 2]);
 
         match port.read() {
-            PortReadResult::Success(_, value) => assert_eq!(0, value),
+            PortReadResult::Success(next_port, value) => {
+                assert_eq!(0, value);
+                assert_eq!(Port::with(vec![1,2], vec![]), next_port);
+            },
             PortReadResult::Failure => panic!(),
 
         }
