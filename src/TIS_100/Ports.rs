@@ -41,6 +41,21 @@ impl Port {
             PortReadResult::Failure
         }
     }
+
+    /// Write to this `Port`. Will always succeed and return the Port as it is
+    /// changed by the write
+    pub fn write(&self, value: i32) -> Port {
+        let mut result_input = vec![];
+        for index in 0..self.input.len() {
+            result_input.push(self.input[index]);
+        }
+        let mut result_output = vec![];
+        for index in 0..self.output.len() {
+            result_output.push(self.output[index]);
+        }
+        result_output.push(value);
+        Port::with(result_input, result_output)
+    }
 }
 
 #[cfg(test)]
@@ -59,5 +74,14 @@ mod tests {
             PortReadResult::Failure => panic!(),
 
         }
+    }
+
+    #[test]
+    fn write_to_a_port_should_work_correctly() {
+        let port: Port = Port::with(vec![1, 2], vec![3]);
+
+        let next_port = port.write(4);
+
+        assert_eq!(Port::with(vec![1, 2], vec![3, 4]), next_port);
     }
 }
