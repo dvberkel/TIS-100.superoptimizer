@@ -25,6 +25,8 @@
 //! }
 //! ```
 
+pub mod Ports;
+
 use std::fmt::{Debug,Formatter,Error};
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
