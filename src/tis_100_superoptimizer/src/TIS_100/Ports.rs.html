@@ -139,6 +139,8 @@
 <span id="95">95</span>
 <span id="96">96</span>
 <span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! `Ports` are the IO channels for a `Node`</span>
 <span class='doccomment'>//!</span>
@@ -147,8 +149,10 @@
 <span class='doccomment'>/// A `Port` can be read from and write to</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>,<span class='ident'>Clone</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Port</span> {
-    <span class='ident'>input</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
-    <span class='ident'>output</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// The input port</span>
+    <span class='kw'>pub</span> <span class='ident'>input</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
+    <span class='doccomment'>/// the output port</span>
+    <span class='kw'>pub</span> <span class='ident'>output</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
 }
 
 <span class='doccomment'>/// The result of reading from a `Port`</span>
