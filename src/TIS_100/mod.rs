@@ -57,11 +57,11 @@ impl PartialEq for Program {
     }
 }
 
-fn same(self_instructions: &Vec<Instruction>, other_instructions: &Vec<Instruction>) -> bool {
-    for index in 0..(self_instructions.len()) {
-        let ref self_instruction = self_instructions[index];
-        let ref other_instruction = other_instructions[index];
-        if self_instruction != other_instruction {
+fn same<T: Eq>(left: &Vec<T>, right: &Vec<T>) -> bool {
+    for index in 0..(left.len()) {
+        let ref left_item = left[index];
+        let ref right_item = right[index];
+        if left_item != right_item {
             return false
         }
     }
