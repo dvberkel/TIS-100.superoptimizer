@@ -52,19 +52,20 @@ impl PartialEq for Program {
     fn eq(&self, other: &Program) -> bool {
         let Program(ref self_instructions) = *self;
         let Program(ref other_instructions) = *other;
-        if self_instructions.len() == other_instructions.len() {
-            for index in 0..(self_instructions.len()) {
-                let ref self_instruction = self_instructions[index];
-                let ref other_instruction = other_instructions[index];
-                if self_instruction != other_instruction {
-                    return false
-                }
-            }
-            true
-        } else {
-            false
+        self_instructions.len() == other_instructions.len() &&
+            same(self_instructions, other_instructions)
+    }
+}
+
+fn same(self_instructions: &Vec<Instruction>, other_instructions: &Vec<Instruction>) -> bool {
+    for index in 0..(self_instructions.len()) {
+        let ref self_instruction = self_instructions[index];
+        let ref other_instruction = other_instructions[index];
+        if self_instruction != other_instruction {
+            return false
         }
     }
+    true
 }
 
 impl Eq for Program {}
