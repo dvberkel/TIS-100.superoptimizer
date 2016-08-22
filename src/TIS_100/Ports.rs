@@ -11,15 +11,6 @@ pub struct Port {
     pub output: Vec<i32>,
 }
 
-/// The result of reading from a `Port`
-#[derive(Debug)]
-pub enum PortReadResult {
-    /// Success
-    Success(Port, i32),
-    /// Failure
-    Failure
-}
-
 impl Port {
     /// Create a port with a number of readable values
     pub fn new(input: Vec<i32>) -> Port {
@@ -33,15 +24,15 @@ impl Port {
 
     /// Read from this `Port`. Will return a `PortReadResult::Success` when a
     /// value is available, otherwise a `PortReadResult::Failure`
-    pub fn read(&self) -> PortReadResult {
+    pub fn read(&self) -> Option<(Port,i32)> {
         if self.input.len() > 0 {
             let mut result_input = vec![];
             for index in 1..self.input.len() {
                 result_input.push(self.input[index]);
             }
-            PortReadResult::Success(Port::with(result_input, vec![]), self.input[0])
+            Some((Port::with(result_input, vec![]), self.input[0]))
         } else {
-            PortReadResult::Failure
+            None
         }
     }
 
@@ -70,11 +61,11 @@ mod tests {
         let port: Port = Port::new(vec![0, 1, 2]);
 
         match port.read() {
-            PortReadResult::Success(next_port, value) => {
+            Some((next_port, value)) => {
                 assert_eq!(0, value);
                 assert_eq!(Port::with(vec![1,2], vec![]), next_port);
             },
-            PortReadResult::Failure => panic!(),
+            None => panic!(),
 
         }
     }

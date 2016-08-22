@@ -28,7 +28,7 @@
 pub mod Ports;
 
 use std::fmt::{Debug,Formatter,Error};
-use self::Ports::{Port, PortReadResult};
+use self::Ports::Port;
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by running `Program`s on it or executing an `Instruction` on it.
@@ -248,12 +248,7 @@ impl Node {
 
     fn value_from(&self, source: Source) -> Option<(Port,i32)> {
         match source {
-            Source::Port => {
-                match self.up.read() {
-                    PortReadResult::Success(next_up, value) => Some((next_up, value)),
-                    PortReadResult::Failure => None,
-                }
-            },
+            Source::Port => self.up.read(),
             Source::Register(Register::NIL) => Some((self.up.clone(),0)),
             Source::Register(Register::ACC) => Some((self.up.clone(),self.acc)),
             Source::Literal(value) => Some((self.up.clone(),value)),
