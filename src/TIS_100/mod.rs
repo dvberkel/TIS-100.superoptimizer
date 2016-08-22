@@ -28,7 +28,7 @@
 pub mod Ports;
 
 use std::fmt::{Debug,Formatter,Error};
-use self::Ports::Port;
+use self::Ports::{Port, PortReadResult};
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by running `Program`s on it or executing an `Instruction` on it.
@@ -36,13 +36,13 @@ use self::Ports::Port;
 pub struct Node {
     /// The accumulator for the basic execution node.
     pub acc: i32,
+    /// The up `Port` used for reading
+    pub up: Port,
+    /// The down `Port` used for writing
+    pub down: Port,
     bac: i32,
     pc: usize,
     program: Program,
-    /// The up `Port` used for reading
-    up: Port,
-    /// The down `Port` used for writing
-    down: Port
 }
 
 /// A `Program` is a sequence of `Instruction`s
@@ -111,6 +111,8 @@ pub enum Instruction {
 /// `Source` are either ports, registers or literals
 #[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Source {
+    /// A port, will always be the up port
+    Port,
     /// A register
     Register(Register),
     /// A literal value
@@ -130,6 +132,8 @@ pub enum Register {
 /// `Destination` are either ports or registers
 #[derive(Debug,PartialEq,Eq,Clone)]
 pub enum Destination {
+    /// A Port, will always be the DOWN port
+    Port,
     /// A register
     Register(Register),
 }
@@ -208,6 +212,16 @@ impl Node {
         Node { bac: bac, program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self }
     }
 
+    /// Create a `Node` from self with a prescribed down port
+    fn set_up(&self, up: Port) -> Node {
+        Node { up: up, program: self.program.clone(), down: self.down.clone(), .. *self }
+    }
+
+    /// Create a `Node` from self with a prescribed down port
+    fn set_down(&self, down: Port) -> Node {
+        Node { down: down, program: self.program.clone(), up: self.up.clone(), .. *self }
+    }
+
     /// Execute the `instruction` on this `Node`. Returns a `Node` that reflects
     /// the changes the `instruction` would have on this `Node`.
     pub fn execute(&self, instruction: Instruction) -> Node {
@@ -226,21 +240,31 @@ impl Node {
     }
 
     fn mov(&self, source: Source, destination: Destination) -> Node {
-        let value: i32 = self.value_from(source);
+        let (next_up_port, value): (Port,i32) = self.value_from(source);
 
-        self.move_value(value, destination)
+        self.set_up(next_up_port).move_value(value, destination)
     }
 
-    fn value_from(&self, source: Source) -> i32 {
+    fn value_from(&self, source: Source) -> (Port,i32) {
         match source {
-            Source::Register(Register::NIL) => 0,
-            Source::Register(Register::ACC) => self.acc,
-            Source::Literal(value) => value,
+            Source::Port => {
+                match self.up.read() {
+                    PortReadResult::Success(next_up, value) => (next_up, value),
+                    PortReadResult::Failure => (self.up.clone(), 3435), // TODO handle failure correctly
+                }
+            },
+            Source::Register(Register::NIL) => (self.up.clone(),0),
+            Source::Register(Register::ACC) => (self.up.clone(),self.acc),
+            Source::Literal(value) => (self.up.clone(),value),
         }
     }
 
     fn move_value(&self, value: i32, destination: Destination) -> Node {
         match destination {
+            Destination::Port => {
+                let next_down = self.down.write(value);
+                self.increment_pc().set_down(next_down)
+            },
             Destination::Register(Register::ACC) => self.increment_pc().set_acc(value),
             _ => self.nop(),
         }
@@ -258,9 +282,9 @@ impl Node {
     }
 
     fn add(&self, source: Source) -> Node{
-        let value: i32 = self.value_from(source);
+        let (next_up_port, value): (Port, i32) = self.value_from(source);
 
-        self.add_value(value)
+        self.set_up(next_up_port).add_value(value)
     }
 
     fn add_value(&self, value: i32) -> Node {
@@ -268,9 +292,9 @@ impl Node {
     }
 
     fn subtract(&self, source: Source) -> Node {
-        let value: i32 = self.value_from(source);
+        let (next_up_port, value): (Port, i32) = self.value_from(source);
 
-        self.subtract_value(value)
+        self.set_up(next_up_port).subtract_value(value)
     }
 
     fn subtract_value(&self, value: i32) -> Node {
@@ -280,10 +304,16 @@ impl Node {
 
 #[cfg(test)]
 mod tests {
+    use super::Ports::*;
     use super::*;
 
-    fn node_with(acc: i32, bac: i32, pc: usize) -> Node {
-        Node::new().set_acc(acc).set_bac(bac).set_pc(pc)
+    fn node_with(acc: i32, bac: i32, pc: usize, up: Vec<i32>, down: Vec<i32>) -> Node {
+        Node::new()
+            .set_acc(acc)
+            .set_bac(bac)
+            .set_pc(pc)
+            .set_up(Port::with(up, vec![]))
+            .set_down(Port::with(vec![], down))
     }
 
     #[test]
@@ -310,7 +340,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -321,7 +351,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -332,7 +362,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(2, 1, 1), next);
+        assert_eq!(node_with(2, 1, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -343,7 +373,29 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
+    }
+
+    #[test]
+    fn node_should_execute_MOV_from_Literal_to_Port_correctly() {
+        let node: Node = Node::new();
+        let instruction: Instruction = Instruction::MOV(Source::Literal(1),
+                                                        Destination::Port);
+
+        let next: Node = node.execute(instruction);
+
+        assert_eq!(node_with(0, 0, 1, vec![], vec![1]), next);
+    }
+
+    #[test]
+    fn node_should_execute_MOV_from_Port_to_ACC_correctly() {
+        let node: Node = Node::new().set_up(Port::new(vec![1]));
+        let instruction: Instruction = Instruction::MOV(Source::Port,
+                                                        Destination::Register(Register::ACC));
+
+        let next: Node = node.execute(instruction);
+
+        assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -353,7 +405,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(0, 1, 1), next);
+        assert_eq!(node_with(0, 1, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -363,7 +415,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(1, 1, 1), next);
+        assert_eq!(node_with(1, 1, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -373,7 +425,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(2, 0, 1), next);
+        assert_eq!(node_with(2, 0, 1, vec![], vec![]), next);
     }
 
     #[test]
@@ -383,7 +435,7 @@ mod tests {
 
         let next: Node = node.execute(instruction);
 
-        assert_eq!(node_with(1, 0, 1), next);
+        assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
 
     #[test]

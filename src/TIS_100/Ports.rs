@@ -24,7 +24,8 @@ impl Port {
         Port { input: input, output: vec![] }
     }
 
-    fn with(input: Vec<i32>, output: Vec<i32>) -> Port {
+    /// Create a port with prescribed input and output
+    pub fn with(input: Vec<i32>, output: Vec<i32>) -> Port {
         Port { input: input, output: output }
     }
 
