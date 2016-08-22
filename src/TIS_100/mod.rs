@@ -58,6 +58,7 @@ impl PartialEq for Program {
 }
 
 fn same<T: Eq>(left: &Vec<T>, right: &Vec<T>) -> bool {
+    assert!(left.len() == right.len());
     for index in 0..(left.len()) {
         let ref left_item = left[index];
         let ref right_item = right[index];
