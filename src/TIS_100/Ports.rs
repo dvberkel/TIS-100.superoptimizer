@@ -5,8 +5,10 @@
 /// A `Port` can be read from and write to
 #[derive(Debug,PartialEq,Eq,Clone)]
 pub struct Port {
-    input: Vec<i32>,
-    output: Vec<i32>,
+    /// The input port
+    pub input: Vec<i32>,
+    /// the output port
+    pub output: Vec<i32>,
 }
 
 /// The result of reading from a `Port`

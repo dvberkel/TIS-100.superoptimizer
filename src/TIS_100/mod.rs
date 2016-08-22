@@ -213,7 +213,7 @@ impl Node {
     }
 
     /// Create a `Node` from self with a prescribed down port
-    fn set_up(&self, up: Port) -> Node {
+    pub fn set_up(&self, up: Port) -> Node {
         Node { up: up, program: self.program.clone(), down: self.down.clone(), .. *self }
     }
 
