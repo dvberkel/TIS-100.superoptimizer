@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-4' class='srclink' href='../../src/tis_100_superoptimizer/src/TIS_100/mod.rs.html#1-471' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-4' class='srclink' href='../../src/tis_100_superoptimizer/src/TIS_100/mod.rs.html#1-468' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>The Tessellated Intelligence System is a</p>
 
 <blockquote>
@@ -70,8 +70,8 @@ the expected result. </p>
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='ident'>node</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>Node</span>::<span class='ident'>new</span>();
     <span class='kw'>let</span> <span class='ident'>last</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>node</span>
-        .<span class='ident'>execute</span>(<span class='ident'>Instruction</span>::<span class='ident'>MOV</span>(<span class='ident'>Source</span>::<span class='ident'>Literal</span>(<span class='number'>1</span>), <span class='ident'>Destination</span>::<span class='ident'>Register</span>(<span class='ident'>Register</span>::<span class='ident'>ACC</span>)))
-        .<span class='ident'>execute</span>(<span class='ident'>Instruction</span>::<span class='ident'>ADD</span>(<span class='ident'>Source</span>::<span class='ident'>Register</span>(<span class='ident'>Register</span>::<span class='ident'>ACC</span>)));
+        .<span class='ident'>execute</span>(<span class='ident'>Instruction</span>::<span class='ident'>MOV</span>(<span class='ident'>Source</span>::<span class='ident'>Literal</span>(<span class='number'>1</span>), <span class='ident'>Destination</span>::<span class='ident'>Register</span>(<span class='ident'>Register</span>::<span class='ident'>ACC</span>))).<span class='ident'>unwrap</span>()
+        .<span class='ident'>execute</span>(<span class='ident'>Instruction</span>::<span class='ident'>ADD</span>(<span class='ident'>Source</span>::<span class='ident'>Register</span>(<span class='ident'>Register</span>::<span class='ident'>ACC</span>))).<span class='ident'>unwrap</span>();
 
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>2</span>, <span class='ident'>last</span>.<span class='ident'>acc</span>);
 }</pre>
