@@ -3,7 +3,7 @@
 //! They can be used as a `Source` and `Destination` for certain `Instruction`s.
 
 /// A `Port` can be read from and write to
-#[derive(Debug,PartialEq,Eq)]
+#[derive(Debug,PartialEq,Eq,Clone)]
 pub struct Port {
     input: Vec<i32>,
     output: Vec<i32>,
@@ -83,5 +83,14 @@ mod tests {
         let next_port = port.write(4);
 
         assert_eq!(Port::with(vec![1, 2], vec![3, 4]), next_port);
+    }
+
+    #[test]
+    fn ports_should_be_able_to_be_cloned() {
+        let port: Port = Port::with(vec![1, 2], vec![3, 4]);
+
+        let clone: Port = port.clone();
+
+        assert_eq!(clone, port);
     }
 }
