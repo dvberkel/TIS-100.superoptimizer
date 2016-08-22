@@ -180,7 +180,12 @@ impl Node {
                     }
                 }
                 None => {
-                    break
+                    if node.up.available() {
+                        node = node.set_pc(0);
+                    } else {
+                        break;
+                    }
+
                 }
             }
         }
@@ -459,6 +464,24 @@ mod tests {
 
         match node.run() {
             Status::Successful(_) => assert!(true),
+            Status::Deadlock(_) => assert!(false),
+        }
+    }
+
+    #[test]
+    fn node_should_execute_program_so_long_as_there_is_input() {
+        let program: Program = Program(vec![// calculate 4 * source - 1
+            Instruction::MOV(Source::Port, Destination::Register(Register::ACC)),
+            Instruction::ADD(Source::Register(Register::ACC)),
+            Instruction::ADD(Source::Register(Register::ACC)),
+            Instruction::SUB(Source::Literal(1)),
+            Instruction::MOV(Source::Register(Register::ACC), Destination::Port),
+        ]);
+        let node: Node = Node::new().set_up(Port::new(vec![1, 2])).load(program);
+
+        match node.run() {
+            Status::Successful(result_node) =>
+                assert_eq!(Port::with(vec![], vec![3, 7]), result_node.down),
             Status::Deadlock(_) => assert!(false),
         }
     }

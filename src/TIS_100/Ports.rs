@@ -36,6 +36,11 @@ impl Port {
         }
     }
 
+    /// Determine if self is available for reading
+    pub fn available(&self) -> bool {
+        self.input.len() > 0
+    }
+
     /// Write to this `Port`. Will always succeed and return the Port as it is
     /// changed by the write
     pub fn write(&self, value: i32) -> Port {
