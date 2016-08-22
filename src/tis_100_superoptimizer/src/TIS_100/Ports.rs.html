@@ -137,10 +137,6 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-<span id="96">96</span>
-<span id="97">97</span>
-<span id="98">98</span>
-<span id="99">99</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! `Ports` are the IO channels for a `Node`</span>
 <span class='doccomment'>//!</span>
@@ -153,15 +149,6 @@
     <span class='kw'>pub</span> <span class='ident'>input</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
     <span class='doccomment'>/// the output port</span>
     <span class='kw'>pub</span> <span class='ident'>output</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>i32</span><span class='op'>&gt;</span>,
-}
-
-<span class='doccomment'>/// The result of reading from a `Port`</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>PortReadResult</span> {
-    <span class='doccomment'>/// Success</span>
-    <span class='ident'>Success</span>(<span class='ident'>Port</span>, <span class='ident'>i32</span>),
-    <span class='doccomment'>/// Failure</span>
-    <span class='ident'>Failure</span>
 }
 
 <span class='kw'>impl</span> <span class='ident'>Port</span> {
@@ -177,16 +164,21 @@
 
     <span class='doccomment'>/// Read from this `Port`. Will return a `PortReadResult::Success` when a</span>
     <span class='doccomment'>/// value is available, otherwise a `PortReadResult::Failure`</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>read</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>PortReadResult</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>read</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>Port</span>,<span class='ident'>i32</span>)<span class='op'>&gt;</span> {
         <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>0</span> {
             <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>result_input</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[];
             <span class='kw'>for</span> <span class='ident'>index</span> <span class='kw'>in</span> <span class='number'>1</span>..<span class='self'>self</span>.<span class='ident'>input</span>.<span class='ident'>len</span>() {
                 <span class='ident'>result_input</span>.<span class='ident'>push</span>(<span class='self'>self</span>.<span class='ident'>input</span>[<span class='ident'>index</span>]);
             }
-            <span class='ident'>PortReadResult</span>::<span class='ident'>Success</span>(<span class='ident'>Port</span>::<span class='ident'>with</span>(<span class='ident'>result_input</span>, <span class='macro'>vec</span><span class='macro'>!</span>[]), <span class='self'>self</span>.<span class='ident'>input</span>[<span class='number'>0</span>])
+            <span class='prelude-val'>Some</span>((<span class='ident'>Port</span>::<span class='ident'>with</span>(<span class='ident'>result_input</span>, <span class='macro'>vec</span><span class='macro'>!</span>[]), <span class='self'>self</span>.<span class='ident'>input</span>[<span class='number'>0</span>]))
         } <span class='kw'>else</span> {
-            <span class='ident'>PortReadResult</span>::<span class='ident'>Failure</span>
+            <span class='prelude-val'>None</span>
         }
+    }
+
+    <span class='doccomment'>/// Determine if self is available for reading</span>
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>available</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='self'>self</span>.<span class='ident'>input</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>0</span>
     }
 
     <span class='doccomment'>/// Write to this `Port`. Will always succeed and return the Port as it is</span>
@@ -214,11 +206,11 @@
         <span class='kw'>let</span> <span class='ident'>port</span>: <span class='ident'>Port</span> <span class='op'>=</span> <span class='ident'>Port</span>::<span class='ident'>new</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>0</span>, <span class='number'>1</span>, <span class='number'>2</span>]);
 
         <span class='kw'>match</span> <span class='ident'>port</span>.<span class='ident'>read</span>() {
-            <span class='ident'>PortReadResult</span>::<span class='ident'>Success</span>(<span class='ident'>next_port</span>, <span class='ident'>value</span>) <span class='op'>=&gt;</span> {
+            <span class='prelude-val'>Some</span>((<span class='ident'>next_port</span>, <span class='ident'>value</span>)) <span class='op'>=&gt;</span> {
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='number'>0</span>, <span class='ident'>value</span>);
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>Port</span>::<span class='ident'>with</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1</span>,<span class='number'>2</span>], <span class='macro'>vec</span><span class='macro'>!</span>[]), <span class='ident'>next_port</span>);
             },
-            <span class='ident'>PortReadResult</span>::<span class='ident'>Failure</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
+            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(),
 
         }
     }

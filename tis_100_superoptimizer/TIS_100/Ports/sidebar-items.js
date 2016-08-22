@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["PortReadResult","The result of reading from a `Port`"]],"struct":[["Port","A `Port` can be read from and write to"]]});
+initSidebarItems({"struct":[["Port","A `Port` can be read from and write to"]]});
