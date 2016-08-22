@@ -28,6 +28,7 @@
 pub mod Ports;
 
 use std::fmt::{Debug,Formatter,Error};
+use self::Ports::Port;
 
 /// A `Node` models the basic execution node in TIS-100. You change a node state
 /// by running `Program`s on it or executing an `Instruction` on it.
@@ -38,6 +39,10 @@ pub struct Node {
     bac: i32,
     pc: usize,
     program: Program,
+    /// The up `Port` used for reading
+    up: Port,
+    /// The down `Port` used for writing
+    down: Port
 }
 
 /// A `Program` is a sequence of `Instruction`s
@@ -141,17 +146,24 @@ pub enum Status {
 impl Node {
     /// Create a `Node` with defaults for accumulator, backup registers, program counter and program
     pub fn new() -> Node {
-        Node { acc: 0, bac: 0, pc: 0, program: Program(vec![]) }
+        Node {
+            acc: 0,
+            bac: 0,
+            pc: 0,
+            program: Program(vec![]),
+            up: Port::new(vec![]),
+            down: Port::new(vec![]),
+        }
     }
 
     /// Loads a program in this `Node`
     pub fn load(&self, program: Program) -> Node {
-        Node { program: program.clone(), .. *self }
+        Node { program: program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self }
     }
 
     /// Run the loaded program, returning an calculation state
     pub fn run(&self) -> Status {
-        let mut node = Node { program: self.program.clone(), .. *self };
+        let mut node = Node { program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self };
 
         loop {
             match node.fetch_instruction() {
@@ -178,22 +190,22 @@ impl Node {
 
     /// Create a `Node` from self with the program counter incremented
     fn increment_pc(&self) -> Node {
-        Node { pc: self.pc + 1, program: self.program.clone(), .. *self }
+        Node { pc: self.pc + 1, program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed program counter value
     fn set_pc(&self, pc: usize) -> Node {
-        Node { pc: pc, program: self.program.clone(), .. *self }
+        Node { pc: pc, program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed accumulator register value
     fn set_acc(&self, acc: i32) -> Node {
-        Node { acc: acc, program: self.program.clone(), .. *self }
+        Node { acc: acc, program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self }
     }
 
     /// Create a `Node` from self with a prescribed backup register value
     fn set_bac(&self, bac: i32) -> Node {
-        Node { bac: bac, program: self.program.clone(), .. *self }
+        Node { bac: bac, program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self }
     }
 
     /// Execute the `instruction` on this `Node`. Returns a `Node` that reflects
