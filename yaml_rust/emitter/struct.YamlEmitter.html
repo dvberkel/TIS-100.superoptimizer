@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Status` enum in crate `tis_100_superoptimizer`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Status">
+    <meta name="description" content="API documentation for the Rust `YamlEmitter` struct in crate `yaml_rust`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, YamlEmitter">
 
-    <title>tis_100_superoptimizer::TIS_100::Status - Rust</title>
+    <title>yaml_rust::emitter::YamlEmitter - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a></p><script>window.sidebarCurrent = {name: 'Status', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>yaml_rust</a>::<wbr><a href='index.html'>emitter</a></p><script>window.sidebarCurrent = {name: 'YamlEmitter', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,19 +42,17 @@
         </form>
     </nav>
 
-    <section id='main' class="content enum">
-<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a>::<wbr><a class='enum' href=''>Status</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>yaml_rust</a>::<wbr><a href='index.html'>emitter</a>::<wbr><a class='struct' href=''>YamlEmitter</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-320' class='srclink' href='../../src/tis_100_superoptimizer/src/TIS_100/mod.rs.html#145-150' title='goto source code'>[src]</a></span></h1>
-<pre class='rust enum'>pub enum Status {
-    Successful(<a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>),
-    Deadlock(<a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>),
-}</pre><div class='docblock'><p>The <code>Status</code> a <code>Program</code> run on a certain <code>Node</code>.</p>
-</div><h2 class='variants'>Variants</h2>
-<span id='variant.Successful' class='variant'><code>Successful(<a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>)</code></span><div class='docblock'><p>a successful run of the program</p>
-</div><span id='variant.Deadlock' class='variant'><code>Deadlock(<a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>)</code></span><div class='docblock'><p>an unsuccessful run of the program, because of a deadlock.</p>
+               </span><a id='src-1609' class='srclink' href='../../src/yaml_rust/emitter.rs.html#17-22' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct YamlEmitter&lt;'a&gt; {
+    // some fields omitted
+}</pre><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class='struct' href='../../yaml_rust/emitter/struct.YamlEmitter.html' title='yaml_rust::emitter::YamlEmitter'>YamlEmitter</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1632' class='srclink' href='../../src/yaml_rust/emitter.rs.html#89-195' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(writer: &amp;'a mut <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Write.html' title='core::fmt::Write'>Write</a>) -&gt; <a class='struct' href='../../yaml_rust/emitter/struct.YamlEmitter.html' title='yaml_rust::emitter::YamlEmitter'>YamlEmitter</a></code></h4>
+<h4 id='method.dump' class='method'><code>fn <a href='#method.dump' class='fnname'>dump</a>(&amp;mut self, doc: &amp;<a class='enum' href='../../yaml_rust/yaml/enum.Yaml.html' title='yaml_rust::yaml::Yaml'>Yaml</a>) -&gt; <a class='type' href='../../yaml_rust/emitter/type.EmitResult.html' title='yaml_rust::emitter::EmitResult'>EmitResult</a></code></h4>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -110,7 +108,7 @@
 
     <script>
         window.rootPath = "../../";
-        window.currentCrate = "tis_100_superoptimizer";
+        window.currentCrate = "yaml_rust";
         window.playgroundUrl = "";
     </script>
     <script src="../../jquery.js"></script>
