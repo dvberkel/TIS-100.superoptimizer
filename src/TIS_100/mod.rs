@@ -18,8 +18,8 @@
 //! fn main() {
 //!     let node: Node = Node::new();
 //!     let last: Node = node
-//!         .execute(Instruction::MOV(Source::Literal(1), Destination::Register(Register::ACC)))
-//!         .execute(Instruction::ADD(Source::Register(Register::ACC)));
+//!         .execute(Instruction::MOV(Source::Literal(1), Destination::Register(Register::ACC))).unwrap()
+//!         .execute(Instruction::ADD(Source::Register(Register::ACC))).unwrap();
 //!
 //!     assert_eq!(2, last.acc);
 //! }
@@ -172,7 +172,10 @@ impl Node {
         loop {
             match node.fetch_instruction() {
                 Some(instruction) => {
-                    node = node.execute(instruction);
+                    match node.execute(instruction) {
+                        Some(next_node) => node = next_node,
+                        None => return Status::Deadlock(node)
+                    }
                 }
                 None => {
                     break
@@ -224,7 +227,7 @@ impl Node {
 
     /// Execute the `instruction` on this `Node`. Returns a `Node` that reflects
     /// the changes the `instruction` would have on this `Node`.
-    pub fn execute(&self, instruction: Instruction) -> Node {
+    pub fn execute(&self, instruction: Instruction) -> Option<Node> {
         match instruction {
             Instruction::NOP => self.nop(),
             Instruction::MOV(source, destination) => self.mov(source, destination) ,
@@ -235,66 +238,60 @@ impl Node {
         }
     }
 
-    fn nop(&self) -> Node {
-        self.increment_pc()
+    fn nop(&self) -> Option<Node> {
+        Some(self.increment_pc())
     }
 
-    fn mov(&self, source: Source, destination: Destination) -> Node {
-        let (next_up_port, value): (Port,i32) = self.value_from(source);
-
-        self.set_up(next_up_port).move_value(value, destination)
+    fn mov(&self, source: Source, destination: Destination) -> Option<Node> {
+        self.value_from(source).and_then(|(next_up_port, value)| self.set_up(next_up_port).move_value(value, destination))
     }
 
-    fn value_from(&self, source: Source) -> (Port,i32) {
+    fn value_from(&self, source: Source) -> Option<(Port,i32)> {
         match source {
             Source::Port => {
                 match self.up.read() {
-                    PortReadResult::Success(next_up, value) => (next_up, value),
-                    PortReadResult::Failure => (self.up.clone(), 3435), // TODO handle failure correctly
+                    PortReadResult::Success(next_up, value) => Some((next_up, value)),
+                    PortReadResult::Failure => None,
                 }
             },
-            Source::Register(Register::NIL) => (self.up.clone(),0),
-            Source::Register(Register::ACC) => (self.up.clone(),self.acc),
-            Source::Literal(value) => (self.up.clone(),value),
+            Source::Register(Register::NIL) => Some((self.up.clone(),0)),
+            Source::Register(Register::ACC) => Some((self.up.clone(),self.acc)),
+            Source::Literal(value) => Some((self.up.clone(),value)),
         }
     }
 
-    fn move_value(&self, value: i32, destination: Destination) -> Node {
+    fn move_value(&self, value: i32, destination: Destination) -> Option<Node> {
         match destination {
             Destination::Port => {
                 let next_down = self.down.write(value);
-                self.increment_pc().set_down(next_down)
+                Some(self.increment_pc().set_down(next_down))
             },
-            Destination::Register(Register::ACC) => self.increment_pc().set_acc(value),
+            Destination::Register(Register::ACC) => Some(self.increment_pc().set_acc(value)),
             _ => self.nop(),
         }
     }
 
-    fn swap(&self) -> Node {
+    fn swap(&self) -> Option<Node> {
         let acc: i32 = self.acc;
         let bac: i32 = self.bac;
 
-        self.increment_pc().set_acc(bac).set_bac(acc)
+        Some(self.increment_pc().set_acc(bac).set_bac(acc))
     }
 
-    fn save(&self) -> Node {
-        self.increment_pc().set_bac(self.acc)
+    fn save(&self) -> Option<Node> {
+        Some(self.increment_pc().set_bac(self.acc))
     }
 
-    fn add(&self, source: Source) -> Node{
-        let (next_up_port, value): (Port, i32) = self.value_from(source);
-
-        self.set_up(next_up_port).add_value(value)
+    fn add(&self, source: Source) -> Option<Node>{
+        self.value_from(source).map(|(next_up_port, value)| self.set_up(next_up_port).add_value(value))
     }
 
     fn add_value(&self, value: i32) -> Node {
         self.increment_pc().set_acc(self.acc + value)
     }
 
-    fn subtract(&self, source: Source) -> Node {
-        let (next_up_port, value): (Port, i32) = self.value_from(source);
-
-        self.set_up(next_up_port).subtract_value(value)
+    fn subtract(&self, source: Source) -> Option<Node> {
+        self.value_from(source).map(|(next_up_port, value)| self.set_up(next_up_port).subtract_value(value))
     }
 
     fn subtract_value(&self, value: i32) -> Node {
@@ -328,7 +325,7 @@ mod tests {
         let node: Node = Node::new();
         let instruction: Instruction = Instruction::SWP;
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(0, next.acc);
     }
@@ -338,7 +335,7 @@ mod tests {
         let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::NOP;
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
@@ -349,7 +346,7 @@ mod tests {
         let instruction: Instruction = Instruction::MOV(Source::Register(Register::NIL),
                                                         Destination::Register(Register::NIL));
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
@@ -360,7 +357,7 @@ mod tests {
         let instruction: Instruction = Instruction::MOV(Source::Register(Register::ACC),
                                                         Destination::Register(Register::ACC));
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(2, 1, 1, vec![], vec![]), next);
     }
@@ -371,7 +368,7 @@ mod tests {
         let instruction: Instruction = Instruction::MOV(Source::Literal(1),
                                                         Destination::Register(Register::ACC));
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
@@ -382,7 +379,7 @@ mod tests {
         let instruction: Instruction = Instruction::MOV(Source::Literal(1),
                                                         Destination::Port);
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(0, 0, 1, vec![], vec![1]), next);
     }
@@ -393,7 +390,7 @@ mod tests {
         let instruction: Instruction = Instruction::MOV(Source::Port,
                                                         Destination::Register(Register::ACC));
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
@@ -403,7 +400,7 @@ mod tests {
         let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::SWP;
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(0, 1, 1, vec![], vec![]), next);
     }
@@ -413,7 +410,7 @@ mod tests {
         let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::SAV;
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(1, 1, 1, vec![], vec![]), next);
     }
@@ -423,7 +420,7 @@ mod tests {
         let node: Node = Node::new().set_acc(1);
         let instruction: Instruction = Instruction::ADD(Source::Literal(1));
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(2, 0, 1, vec![], vec![]), next);
     }
@@ -433,7 +430,7 @@ mod tests {
         let node: Node = Node::new().set_acc(2);
         let instruction: Instruction = Instruction::SUB(Source::Literal(1));
 
-        let next: Node = node.execute(instruction);
+        let next: Node = node.execute(instruction).unwrap();
 
         assert_eq!(node_with(1, 0, 1, vec![], vec![]), next);
     }
