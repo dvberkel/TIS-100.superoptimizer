@@ -1,6 +1,6 @@
 extern crate tis_100_superoptimizer;
 
-use tis_100_superoptimizer::TIS_100::{Node,Program,Instruction,Source,Destination,Register,Status};
+use tis_100_superoptimizer::TIS_100::{Node,Program,Instruction,Source,Destination,Register};
 use tis_100_superoptimizer::TIS_100::Ports::Port;
 
 fn main(){
@@ -13,7 +13,7 @@ fn main(){
     let node: Node = Node::new().set_up(Port::new(vec![input])).load(program);
 
     match node.run() {
-        Status::Successful(result) => {
+        Ok(result) => {
             let value = result.down.output[0];
 
             println!("2 times {} equals {}", input, value)

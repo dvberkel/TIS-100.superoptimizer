@@ -141,12 +141,12 @@ pub enum Destination {
 }
 
 
-/// The `Status` a `Program` run on a certain `Node`.
-pub enum Status {
-    /// a successful run of the program
-    Successful(Node),
-    /// an unsuccessful run of the program, because of a deadlock.
+/// The `ErrorStatus` a `Program` of an unsuccessful run on a certain `Node`
+pub enum ErrorStatus {
+    /// a deadlock occurred
     Deadlock(Node),
+    /// a timeout occurred
+    Timeout(Node)
 }
 
 impl Node {
@@ -168,7 +168,7 @@ impl Node {
     }
 
     /// Run the loaded program, returning an calculation state
-    pub fn run(&self) -> Status {
+    pub fn run(&self) -> Result<Node, ErrorStatus> {
         let mut node = Node { program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self };
 
         loop {
@@ -176,7 +176,7 @@ impl Node {
                 Some(instruction) => {
                     match node.execute(instruction) {
                         Some(next_node) => node = next_node,
-                        None => return Status::Deadlock(node)
+                        None => return Err(ErrorStatus::Deadlock(node))
                     }
                 }
                 None => {
@@ -190,7 +190,7 @@ impl Node {
             }
         }
 
-        Status::Successful(Node { program: node.program.clone(), .. node })
+        Ok(Node { program: node.program.clone(), .. node })
     }
 
     fn fetch_instruction(&self) -> Option<Instruction> {
@@ -463,8 +463,8 @@ mod tests {
         let node: Node = Node::new().load(program);
 
         match node.run() {
-            Status::Successful(_) => assert!(true),
-            Status::Deadlock(_) => assert!(false),
+            Ok(_) => assert!(true),
+            Err(_) => assert!(false),
         }
     }
 
@@ -480,9 +480,9 @@ mod tests {
         let node: Node = Node::new().set_up(Port::new(vec![1, 2])).load(program);
 
         match node.run() {
-            Status::Successful(result_node) =>
+            Ok(result_node) =>
                 assert_eq!(Port::with(vec![], vec![3, 7]), result_node.down),
-            Status::Deadlock(_) => assert!(false),
+            Err(_) => assert!(false),
         }
     }
 }
