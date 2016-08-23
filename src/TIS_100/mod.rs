@@ -122,7 +122,7 @@ pub enum Source {
 }
 
 /// Different types of Registers known in TIS-100
-#[derive(Debug,PartialEq,Eq,Clone)]
+#[derive(Debug,PartialEq,Eq,Clone,Copy)]
 pub enum Register {
     /// the NIL register, reading from it provides with zero
     NIL,
