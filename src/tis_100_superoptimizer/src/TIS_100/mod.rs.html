@@ -656,7 +656,7 @@
 }
 
 <span class='doccomment'>/// Different types of Registers known in TIS-100</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>,<span class='ident'>Clone</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>,<span class='ident'>Clone</span>,<span class='ident'>Copy</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Register</span> {
     <span class='doccomment'>/// the NIL register, reading from it provides with zero</span>
     <span class='ident'>NIL</span>,
@@ -675,12 +675,12 @@
 }
 
 
-<span class='doccomment'>/// The `Status` a `Program` run on a certain `Node`.</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Status</span> {
-    <span class='doccomment'>/// a successful run of the program</span>
-    <span class='ident'>Successful</span>(<span class='ident'>Node</span>),
-    <span class='doccomment'>/// an unsuccessful run of the program, because of a deadlock.</span>
+<span class='doccomment'>/// The `ErrorStatus` a `Program` of an unsuccessful run on a certain `Node`</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>ErrorStatus</span> {
+    <span class='doccomment'>/// a deadlock occurred</span>
     <span class='ident'>Deadlock</span>(<span class='ident'>Node</span>),
+    <span class='doccomment'>/// a timeout occurred</span>
+    <span class='ident'>Timeout</span>(<span class='ident'>Node</span>)
 }
 
 <span class='kw'>impl</span> <span class='ident'>Node</span> {
@@ -702,7 +702,7 @@
     }
 
     <span class='doccomment'>/// Run the loaded program, returning an calculation state</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Status</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>ErrorStatus</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>node</span> <span class='op'>=</span> <span class='ident'>Node</span> { <span class='ident'>program</span>: <span class='self'>self</span>.<span class='ident'>program</span>.<span class='ident'>clone</span>(), <span class='ident'>up</span>: <span class='self'>self</span>.<span class='ident'>up</span>.<span class='ident'>clone</span>(), <span class='ident'>down</span>: <span class='self'>self</span>.<span class='ident'>down</span>.<span class='ident'>clone</span>(), .. <span class='op'>*</span><span class='self'>self</span> };
 
         <span class='kw'>loop</span> {
@@ -710,7 +710,7 @@
                 <span class='prelude-val'>Some</span>(<span class='ident'>instruction</span>) <span class='op'>=&gt;</span> {
                     <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>execute</span>(<span class='ident'>instruction</span>) {
                         <span class='prelude-val'>Some</span>(<span class='ident'>next_node</span>) <span class='op'>=&gt;</span> <span class='ident'>node</span> <span class='op'>=</span> <span class='ident'>next_node</span>,
-                        <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='ident'>Status</span>::<span class='ident'>Deadlock</span>(<span class='ident'>node</span>)
+                        <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>ErrorStatus</span>::<span class='ident'>Deadlock</span>(<span class='ident'>node</span>))
                     }
                 }
                 <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
@@ -724,7 +724,7 @@
             }
         }
 
-        <span class='ident'>Status</span>::<span class='ident'>Successful</span>(<span class='ident'>Node</span> { <span class='ident'>program</span>: <span class='ident'>node</span>.<span class='ident'>program</span>.<span class='ident'>clone</span>(), .. <span class='ident'>node</span> })
+        <span class='prelude-val'>Ok</span>(<span class='ident'>Node</span> { <span class='ident'>program</span>: <span class='ident'>node</span>.<span class='ident'>program</span>.<span class='ident'>clone</span>(), .. <span class='ident'>node</span> })
     }
 
     <span class='kw'>fn</span> <span class='ident'>fetch_instruction</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Instruction</span><span class='op'>&gt;</span> {
@@ -997,8 +997,8 @@
         <span class='kw'>let</span> <span class='ident'>node</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>Node</span>::<span class='ident'>new</span>().<span class='ident'>load</span>(<span class='ident'>program</span>);
 
         <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>() {
-            <span class='ident'>Status</span>::<span class='ident'>Successful</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>true</span>),
-            <span class='ident'>Status</span>::<span class='ident'>Deadlock</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
+            <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>true</span>),
+            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
         }
     }
 
@@ -1014,9 +1014,9 @@
         <span class='kw'>let</span> <span class='ident'>node</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>Node</span>::<span class='ident'>new</span>().<span class='ident'>set_up</span>(<span class='ident'>Port</span>::<span class='ident'>new</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1</span>, <span class='number'>2</span>])).<span class='ident'>load</span>(<span class='ident'>program</span>);
 
         <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>() {
-            <span class='ident'>Status</span>::<span class='ident'>Successful</span>(<span class='ident'>result_node</span>) <span class='op'>=&gt;</span>
+            <span class='prelude-val'>Ok</span>(<span class='ident'>result_node</span>) <span class='op'>=&gt;</span>
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>Port</span>::<span class='ident'>with</span>(<span class='macro'>vec</span><span class='macro'>!</span>[], <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>3</span>, <span class='number'>7</span>]), <span class='ident'>result_node</span>.<span class='ident'>down</span>),
-            <span class='ident'>Status</span>::<span class='ident'>Deadlock</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
+            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
         }
     }
 }
