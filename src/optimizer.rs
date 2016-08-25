@@ -66,7 +66,7 @@ impl Iterator for ProgramIterator {
 
     fn next(&mut self) -> Option<Program> {
         let instructions: Vec<Instruction> =
-            digits_of(self.current, 18)
+            digits_of(self.current, 19)
             .iter()
             .map(|digit| instruction_map(*digit))
             .collect();
@@ -86,25 +86,26 @@ fn digits_of(mut n: u32, base: u32) -> Vec<u32> {
 }
 
 fn instruction_map(index: u32) -> Instruction {
-    match index.rem(18) {
-        0 => Instruction::SWP,
-        1 => Instruction::SAV,
-        2 => Instruction::ADD(Source::Port),
-        3 => Instruction::ADD(Source::Register(Register::ACC)),
-        4 => Instruction::ADD(Source::Literal(1)),
-        5 => Instruction::SUB(Source::Port),
-        6 => Instruction::SUB(Source::Register(Register::ACC)),
-        7 => Instruction::SUB(Source::Literal(1)),
-        8 => Instruction::MOV(Source::Port, Destination::Port),
-        9 => Instruction::MOV(Source::Register(Register::ACC), Destination::Port),
-        10 => Instruction::MOV(Source::Literal(0), Destination::Port),
-        11 => Instruction::MOV(Source::Literal(1), Destination::Port),
-        12 => Instruction::MOV(Source::Literal(-1), Destination::Port),
-        13 => Instruction::MOV(Source::Port, Destination::Register(Register::ACC)),
-        14 => Instruction::MOV(Source::Register(Register::ACC), Destination::Register(Register::ACC)),
-        15 => Instruction::MOV(Source::Literal(0), Destination::Register(Register::ACC)),
-        16 => Instruction::MOV(Source::Literal(1), Destination::Register(Register::ACC)),
-        17 => Instruction::MOV(Source::Literal(-1), Destination::Register(Register::ACC)),
+    match index.rem(19) {
+        0 => Instruction::NOP,
+        1 => Instruction::SWP,
+        2 => Instruction::SAV,
+        3 => Instruction::ADD(Source::Port),
+        4 => Instruction::ADD(Source::Register(Register::ACC)),
+        5 => Instruction::ADD(Source::Literal(1)),
+        6 => Instruction::SUB(Source::Port),
+        7 => Instruction::SUB(Source::Register(Register::ACC)),
+        8 => Instruction::SUB(Source::Literal(1)),
+        9 => Instruction::MOV(Source::Port, Destination::Port),
+        10 => Instruction::MOV(Source::Register(Register::ACC), Destination::Port),
+        11 => Instruction::MOV(Source::Literal(0), Destination::Port),
+        12 => Instruction::MOV(Source::Literal(1), Destination::Port),
+        13 => Instruction::MOV(Source::Literal(-1), Destination::Port),
+        14 => Instruction::MOV(Source::Port, Destination::Register(Register::ACC)),
+        15 => Instruction::MOV(Source::Register(Register::ACC), Destination::Register(Register::ACC)),
+        16 => Instruction::MOV(Source::Literal(0), Destination::Register(Register::ACC)),
+        17 => Instruction::MOV(Source::Literal(1), Destination::Register(Register::ACC)),
+        18 => Instruction::MOV(Source::Literal(-1), Destination::Register(Register::ACC)),
         _ => Instruction::NOP,
     }
 }
@@ -118,16 +119,17 @@ mod tests {
     fn should_iterate_over_programs() {
         let programs: Vec<Program> = ProgramIterator::new().take(20).collect();
 
-        assert_eq!(Program(vec![Instruction::SWP]), programs[0]);
-        assert_eq!(Program(vec![Instruction::SAV]), programs[1]);
+        assert_eq!(Program(vec![Instruction::NOP]), programs[0]);
+        assert_eq!(Program(vec![Instruction::SWP]), programs[1]);
+        assert_eq!(Program(vec![Instruction::SAV]), programs[2]);
         assert_eq!(Program(vec![
             Instruction::MOV(
                 Source::Literal(-1),
                 Destination::Register(Register::ACC)),
-        ]), programs[17]);
+        ]), programs[18]);
         assert_eq!(Program(vec![
+            Instruction::NOP,
             Instruction::SWP,
-            Instruction::SAV,
-        ]), programs[18])
+        ]), programs[19])
     }
 }
