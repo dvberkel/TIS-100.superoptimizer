@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `check` fn in crate `tis_100_superoptimizer`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, check">
+    <meta name="description" content="API documentation for the Rust `optimize` fn in crate `tis_100_superoptimizer`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, optimize">
 
-    <title>tis_100_superoptimizer::check::check - Rust</title>
+    <title>tis_100_superoptimizer::optimizer::optimize - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>check</a></p><script>window.sidebarCurrent = {name: 'check', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>optimizer</a></p><script>window.sidebarCurrent = {name: 'optimize', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -43,12 +43,12 @@
     </nav>
 
     <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>check</a>::<wbr><a class='fn' href=''>check</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>optimizer</a>::<wbr><a class='fn' href=''>optimize</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-429' class='srclink' href='../../src/tis_100_superoptimizer/src/check.rs.html#8-17' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn check(node: <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>, program: <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Program.html' title='tis_100_superoptimizer::TIS_100::Program'>Program</a>, expected_result: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt;, maximum_cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></pre><div class='docblock'><p>Checks if <code>Node</code> when run with <code>Program</code> writes <code>expected_result</code> to <code>Destination::Port</code></p>
+               </span><a id='src-496' class='srclink' href='../../src/tis_100_superoptimizer/src/optimizer.rs.html#26-34' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn optimize(node: <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>, expected_output: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt;, config: <a class='struct' href='../../tis_100_superoptimizer/optimizer/struct.Config.html' title='tis_100_superoptimizer::optimizer::Config'>Config</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Program.html' title='tis_100_superoptimizer::TIS_100::Program'>Program</a>&gt;</pre><div class='docblock'><p>Tries to find a <code>Program</code> that satisfies the context</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

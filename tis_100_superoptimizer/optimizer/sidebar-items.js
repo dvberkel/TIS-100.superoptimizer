@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["ProgramIterator","Iterator over Programs"]],"trait":[["Content","Allows one to determine the content of certain constructs, e.g. `Program`s or `Instruction`s"]]});
+initSidebarItems({"fn":[["optimize","Tries to find a `Program` that satisfies the context"]],"struct":[["Config","Configuration for the optimize function"]]});

@@ -601,7 +601,7 @@
 
 <span class='doccomment'>/// A `Node` models the basic execution node in TIS-100. You change a node state</span>
 <span class='doccomment'>/// by running `Program`s on it or executing an `Instruction` on it.</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>)]</span>
+<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Debug</span>,<span class='ident'>PartialEq</span>,<span class='ident'>Eq</span>,<span class='ident'>Clone</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Node</span> {
     <span class='doccomment'>/// The accumulator for the basic execution node.</span>
     <span class='kw'>pub</span> <span class='ident'>acc</span>: <span class='ident'>i32</span>,

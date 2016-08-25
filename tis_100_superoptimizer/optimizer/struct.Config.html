@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Content` trait in crate `tis_100_superoptimizer`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Content">
+    <meta name="description" content="API documentation for the Rust `Config` struct in crate `tis_100_superoptimizer`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Config">
 
-    <title>tis_100_superoptimizer::optimizer::Content - Rust</title>
+    <title>tis_100_superoptimizer::optimizer::Config - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>optimizer</a></p><script>window.sidebarCurrent = {name: 'Content', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>optimizer</a></p><script>window.sidebarCurrent = {name: 'Config', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,30 +42,24 @@
         </form>
     </nav>
 
-    <section id='main' class="content trait">
-<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>optimizer</a>::<wbr><a class='trait' href=''>Content</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>optimizer</a>::<wbr><a class='struct' href=''>Config</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-434' class='srclink' href='../../src/tis_100_superoptimizer/src/optimizer.rs.html#11-14' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait Content {
-    fn <a href='#tymethod.content' class='fnname'>content</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>;
-}</pre><div class='docblock'><p>Allows one to determine the content of certain constructs, e.g. <code>Program</code>s
-or <code>Instruction</code>s</p>
-</div>
-            <h2 id='required-methods'>Required Methods</h2>
-            <div class='methods'>
-        <h3 id='tymethod.content' class='method stab '><span id='content.v' class='invisible'><code>fn <a href='#tymethod.content' class='fnname'>content</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></span></h3><div class='docblock'><p>the content of the construct</p>
-</div></div>
-        <h2 id='implementors'>Implementors</h2>
-        <ul class='item-list' id='implementors-list'>
-    <li><code>impl Content for <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Program.html' title='tis_100_superoptimizer::TIS_100::Program'>Program</a></code></li>
-<li><code>impl Content for <a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Instruction.html' title='tis_100_superoptimizer::TIS_100::Instruction'>Instruction</a></code></li>
-<li><code>impl Content for <a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Source.html' title='tis_100_superoptimizer::TIS_100::Source'>Source</a></code></li>
-<li><code>impl Content for <a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Destination.html' title='tis_100_superoptimizer::TIS_100::Destination'>Destination</a></code></li>
-</ul><script type="text/javascript" async
-                         src="../../implementors/tis_100_superoptimizer/optimizer/trait.Content.js">
-                 </script></section>
+               </span><a id='src-489' class='srclink' href='../../src/tis_100_superoptimizer/src/optimizer.rs.html#8-13' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Config {
+    pub maximum_cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
+    pub maximum_program_length: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,
+}</pre><div class='docblock'><p>Configuration for the optimize function</p>
+</div><h2 class='fields'>Fields</h2><span id='structfield.maximum_cycle' class='structfield'><code>maximum_cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code>
+                           </span><span class='stab '></span><div class='docblock'><p>The maximum allowed number of cycles per program</p>
+</div><span id='structfield.maximum_program_length' class='structfield'><code>maximum_program_length: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code>
+                           </span><span class='stab '></span><div class='docblock'><p>The maximum allowed program length</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../tis_100_superoptimizer/optimizer/struct.Config.html' title='tis_100_superoptimizer::optimizer::Config'>Config</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-492' class='srclink' href='../../src/tis_100_superoptimizer/src/optimizer.rs.html#15-23' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(maximum_cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>, maximum_program_length: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../tis_100_superoptimizer/optimizer/struct.Config.html' title='tis_100_superoptimizer::optimizer::Config'>Config</a></code></h4>
+<div class='docblock'><p>create a <code>Config</code> with prescribed maximum_cycle and maximum_program_length</p>
+</div></div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

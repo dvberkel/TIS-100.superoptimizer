@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `check` fn in crate `tis_100_superoptimizer`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, check">
+    <meta name="description" content="API documentation for the Rust `Content` trait in crate `tis_100_superoptimizer`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Content">
 
-    <title>tis_100_superoptimizer::check::check - Rust</title>
+    <title>tis_100_superoptimizer::iterator::Content - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>check</a></p><script>window.sidebarCurrent = {name: 'check', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>iterator</a></p><script>window.sidebarCurrent = {name: 'Content', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,14 +42,30 @@
         </form>
     </nav>
 
-    <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>check</a>::<wbr><a class='fn' href=''>check</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>iterator</a>::<wbr><a class='trait' href=''>Content</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-429' class='srclink' href='../../src/tis_100_superoptimizer/src/check.rs.html#8-17' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub fn check(node: <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Node.html' title='tis_100_superoptimizer::TIS_100::Node'>Node</a>, program: <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Program.html' title='tis_100_superoptimizer::TIS_100::Program'>Program</a>, expected_result: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt;, maximum_cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></pre><div class='docblock'><p>Checks if <code>Node</code> when run with <code>Program</code> writes <code>expected_result</code> to <code>Destination::Port</code></p>
-</div></section>
+               </span><a id='src-444' class='srclink' href='../../src/tis_100_superoptimizer/src/iterator.rs.html#11-14' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Content {
+    fn <a href='#tymethod.content' class='fnname'>content</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>;
+}</pre><div class='docblock'><p>Allows one to determine the content of certain constructs, e.g. <code>Program</code>s
+or <code>Instruction</code>s</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.content' class='method stab '><code>fn <a href='#tymethod.content' class='fnname'>content</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></h3><div class='docblock'><p>the content of the construct</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl Content for <a class='struct' href='../../tis_100_superoptimizer/TIS_100/struct.Program.html' title='tis_100_superoptimizer::TIS_100::Program'>Program</a></code></li>
+<li><code>impl Content for <a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Instruction.html' title='tis_100_superoptimizer::TIS_100::Instruction'>Instruction</a></code></li>
+<li><code>impl Content for <a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Source.html' title='tis_100_superoptimizer::TIS_100::Source'>Source</a></code></li>
+<li><code>impl Content for <a class='enum' href='../../tis_100_superoptimizer/TIS_100/enum.Destination.html' title='tis_100_superoptimizer::TIS_100::Destination'>Destination</a></code></li>
+</ul><script type="text/javascript" async
+                         src="../../implementors/tis_100_superoptimizer/iterator/trait.Content.js">
+                 </script></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>
