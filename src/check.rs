@@ -2,13 +2,13 @@
 //! `Node` produces the expected result. I.e. Reads the input on `Source::Port`
 //! and writes the correct sequence the `Destination::Port`.
 
-use super::TIS_100::{Node, Program};
+use super::TIS_100::{Node, Program, Cycle};
 
 /// Checks if `Node` when run with `Program` writes `expected_result` to `Destination::Port`
 pub fn check(node: Node, program: Program, expected_result: Vec<i32>) -> bool {
     let local_node: Node = node.load(program);
 
-    match local_node.run() {
+    match local_node.run(Cycle::Maximum(10_000)) {
         Ok(result_node) => {
             same(result_node.down.output, expected_result)
         },

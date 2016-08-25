@@ -149,6 +149,24 @@ pub enum ErrorStatus {
     Timeout(Node)
 }
 
+/// Determines how many cycles to run a program
+pub enum Cycle {
+    /// Run until the input arguments run out
+    Indefinetly,
+    /// Run for a maximum of cycles
+    Maximum(u32),
+}
+
+impl Cycle {
+    fn should_continu(&self, cycle_count: u32) -> bool {
+        match *self {
+            Cycle::Indefinetly => true,
+            Cycle::Maximum(maximum) => cycle_count < maximum,
+        }
+    }
+}
+
+
 impl Node {
     /// Create a `Node` with defaults for accumulator, backup registers, program counter and program
     pub fn new() -> Node {
@@ -168,24 +186,29 @@ impl Node {
     }
 
     /// Run the loaded program, returning an calculation state
-    pub fn run(&self) -> Result<Node, ErrorStatus> {
+    pub fn run(&self, allowed_cycles: Cycle) -> Result<Node, ErrorStatus> {
         let mut node = Node { program: self.program.clone(), up: self.up.clone(), down: self.down.clone(), .. *self };
 
+        let mut cycle_count: u32 = 0;
         loop {
             match node.fetch_instruction() {
                 Some(instruction) => {
                     match node.execute(instruction) {
                         Some(next_node) => node = next_node,
-                        None => return Err(ErrorStatus::Deadlock(node))
+                        None => return Err(ErrorStatus::Deadlock(node)),
                     }
                 }
                 None => {
+                    cycle_count += 1;
                     if node.up.available() {
-                        node = node.set_pc(0);
+                        if allowed_cycles.should_continu(cycle_count) {
+                            node = node.set_pc(0);
+                        } else {
+                            return Err(ErrorStatus::Timeout(node));
+                        }
                     } else {
                         break;
                     }
-
                 }
             }
         }
@@ -462,7 +485,7 @@ mod tests {
         ]);
         let node: Node = Node::new().load(program);
 
-        match node.run() {
+        match node.run(Cycle::Indefinetly) {
             Ok(_) => assert!(true),
             Err(_) => assert!(false),
         }
@@ -479,11 +502,23 @@ mod tests {
         ]);
         let node: Node = Node::new().set_up(Port::new(vec![1, 2])).load(program);
 
-        match node.run() {
+        match node.run(Cycle::Indefinetly) {
             Ok(result_node) =>
                 assert_eq!(Port::with(vec![], vec![3, 7]), result_node.down),
             Err(_) => assert!(false),
         }
     }
+
+    #[test]
+    fn node_should_timeout_execution_program_when_cycles_are_restricted() {
+        let program: Program = Program(vec![Instruction::NOP]);
+        let node: Node = Node::new().set_up(Port::new(vec![1, 2])).load(program);
+
+        match node.run(Cycle::Maximum(100)) {
+            Ok(_) => assert!(false),
+            Err(_) => assert!(true),
+        }
+    }
+
 }
 
