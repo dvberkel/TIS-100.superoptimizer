@@ -27,4 +27,5 @@
 pub mod TIS_100;
 pub mod check;
 pub mod iterator;
+pub mod optimizer;
 

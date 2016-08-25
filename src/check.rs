@@ -5,10 +5,10 @@
 use super::TIS_100::{Node, Program, Cycle};
 
 /// Checks if `Node` when run with `Program` writes `expected_result` to `Destination::Port`
-pub fn check(node: Node, program: Program, expected_result: Vec<i32>) -> bool {
+pub fn check(node: Node, program: Program, expected_result: Vec<i32>, maximum_cycle: u32) -> bool {
     let local_node: Node = node.load(program);
 
-    match local_node.run(Cycle::Maximum(10_000)) {
+    match local_node.run(Cycle::Maximum(maximum_cycle)) {
         Ok(result_node) => {
             same(result_node.down.output, expected_result)
         },
@@ -44,6 +44,6 @@ mod tests {
         ]);
         let node: Node = Node::new().set_up(Port::new(vec![0, 1, 2, 3]));
 
-        assert!(check(node, program, vec![1, 5]))
+        assert!(check(node, program, vec![1, 5], 10))
     }
 }
