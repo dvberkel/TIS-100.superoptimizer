@@ -9,3 +9,7 @@ yaml-rust = "0.3.3"
 [lib]
 name = "tis_100_superoptimizer"
 path = "src/lib.rs"
+
+[[bin]]
+name = "optimize"
+path = "src/bin/optimize.rs"
