@@ -38,6 +38,6 @@ fn main() {
 
     match optimize(node, expected_output, config) {
         Some(program) => println!("{:?}", program),
-        _ => println!("Could not find a program with the bounds"),
+        _ => println!("Could not find a program within the bounds"),
     }
 }
