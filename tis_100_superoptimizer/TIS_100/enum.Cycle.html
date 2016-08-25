@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `check` mod in crate `tis_100_superoptimizer`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, check">
+    <meta name="description" content="API documentation for the Rust `Cycle` enum in crate `tis_100_superoptimizer`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Cycle">
 
-    <title>tis_100_superoptimizer::check - Rust</title>
+    <title>tis_100_superoptimizer::TIS_100::Cycle - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a></p><script>window.sidebarCurrent = {name: 'check', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+        <p class='location'><a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a></p><script>window.sidebarCurrent = {name: 'Cycle', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -42,24 +42,20 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a class='mod' href=''>check</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>tis_100_superoptimizer</a>::<wbr><a href='index.html'>TIS_100</a>::<wbr><a class='enum' href=''>Cycle</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-418' class='srclink' href='../../src/tis_100_superoptimizer/src/check.rs.html#1-49' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>The check module verifies if a certain <code>Program</code> when run on a specific
-<code>Node</code> produces the expected result. I.e. Reads the input on <code>Source::Port</code>
-and writes the correct sequence the <code>Destination::Port</code>.</p>
-</div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class='fn' href='fn.check.html'
-                                  title='tis_100_superoptimizer::check::check'>check</a></td>
-                           <td class='docblock short'>
-                                <p>Checks if <code>Node</code> when run with <code>Program</code> writes <code>expected_result</code> to <code>Destination::Port</code></p>
-                           </td>
-                       </tr></table></section>
+               </span><a id='src-326' class='srclink' href='../../src/tis_100_superoptimizer/src/TIS_100/mod.rs.html#153-158' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum Cycle {
+    Indefinetly,
+    Maximum(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>),
+}</pre><div class='docblock'><p>Determines how many cycles to run a program</p>
+</div><h2 class='variants'>Variants</h2>
+<span id='variant.Indefinetly' class='variant'><code>Indefinetly</code></span><div class='docblock'><p>Run until the input arguments run out</p>
+</div><span id='variant.Maximum' class='variant'><code>Maximum(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</code></span><div class='docblock'><p>Run for a maximum of cycles</p>
+</div></section>
     <section id='search' class="content hidden"></section>
 
     <section class="footer"></section>

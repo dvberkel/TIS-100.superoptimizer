@@ -531,6 +531,41 @@
 <span id="487">487</span>
 <span id="488">488</span>
 <span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! The Tessellated Intelligence System is a</span>
 <span class='doccomment'>//!</span>
@@ -683,6 +718,24 @@
     <span class='ident'>Timeout</span>(<span class='ident'>Node</span>)
 }
 
+<span class='doccomment'>/// Determines how many cycles to run a program</span>
+<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>Cycle</span> {
+    <span class='doccomment'>/// Run until the input arguments run out</span>
+    <span class='ident'>Indefinetly</span>,
+    <span class='doccomment'>/// Run for a maximum of cycles</span>
+    <span class='ident'>Maximum</span>(<span class='ident'>u32</span>),
+}
+
+<span class='kw'>impl</span> <span class='ident'>Cycle</span> {
+    <span class='kw'>fn</span> <span class='ident'>should_continu</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>cycle_count</span>: <span class='ident'>u32</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='kw'>match</span> <span class='op'>*</span><span class='self'>self</span> {
+            <span class='ident'>Cycle</span>::<span class='ident'>Indefinetly</span> <span class='op'>=&gt;</span> <span class='bool-val'>true</span>,
+            <span class='ident'>Cycle</span>::<span class='ident'>Maximum</span>(<span class='ident'>maximum</span>) <span class='op'>=&gt;</span> <span class='ident'>cycle_count</span> <span class='op'>&lt;</span> <span class='ident'>maximum</span>,
+        }
+    }
+}
+
+
 <span class='kw'>impl</span> <span class='ident'>Node</span> {
     <span class='doccomment'>/// Create a `Node` with defaults for accumulator, backup registers, program counter and program</span>
     <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>() <span class='op'>-&gt;</span> <span class='ident'>Node</span> {
@@ -702,24 +755,29 @@
     }
 
     <span class='doccomment'>/// Run the loaded program, returning an calculation state</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>ErrorStatus</span><span class='op'>&gt;</span> {
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>run</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>allowed_cycles</span>: <span class='ident'>Cycle</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Node</span>, <span class='ident'>ErrorStatus</span><span class='op'>&gt;</span> {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>node</span> <span class='op'>=</span> <span class='ident'>Node</span> { <span class='ident'>program</span>: <span class='self'>self</span>.<span class='ident'>program</span>.<span class='ident'>clone</span>(), <span class='ident'>up</span>: <span class='self'>self</span>.<span class='ident'>up</span>.<span class='ident'>clone</span>(), <span class='ident'>down</span>: <span class='self'>self</span>.<span class='ident'>down</span>.<span class='ident'>clone</span>(), .. <span class='op'>*</span><span class='self'>self</span> };
 
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>cycle_count</span>: <span class='ident'>u32</span> <span class='op'>=</span> <span class='number'>0</span>;
         <span class='kw'>loop</span> {
             <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>fetch_instruction</span>() {
                 <span class='prelude-val'>Some</span>(<span class='ident'>instruction</span>) <span class='op'>=&gt;</span> {
                     <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>execute</span>(<span class='ident'>instruction</span>) {
                         <span class='prelude-val'>Some</span>(<span class='ident'>next_node</span>) <span class='op'>=&gt;</span> <span class='ident'>node</span> <span class='op'>=</span> <span class='ident'>next_node</span>,
-                        <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>ErrorStatus</span>::<span class='ident'>Deadlock</span>(<span class='ident'>node</span>))
+                        <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>ErrorStatus</span>::<span class='ident'>Deadlock</span>(<span class='ident'>node</span>)),
                     }
                 }
                 <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
+                    <span class='ident'>cycle_count</span> <span class='op'>+=</span> <span class='number'>1</span>;
                     <span class='kw'>if</span> <span class='ident'>node</span>.<span class='ident'>up</span>.<span class='ident'>available</span>() {
-                        <span class='ident'>node</span> <span class='op'>=</span> <span class='ident'>node</span>.<span class='ident'>set_pc</span>(<span class='number'>0</span>);
+                        <span class='kw'>if</span> <span class='ident'>allowed_cycles</span>.<span class='ident'>should_continu</span>(<span class='ident'>cycle_count</span>) {
+                            <span class='ident'>node</span> <span class='op'>=</span> <span class='ident'>node</span>.<span class='ident'>set_pc</span>(<span class='number'>0</span>);
+                        } <span class='kw'>else</span> {
+                            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>ErrorStatus</span>::<span class='ident'>Timeout</span>(<span class='ident'>node</span>));
+                        }
                     } <span class='kw'>else</span> {
                         <span class='kw'>break</span>;
                     }
-
                 }
             }
         }
@@ -996,7 +1054,7 @@
         ]);
         <span class='kw'>let</span> <span class='ident'>node</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>Node</span>::<span class='ident'>new</span>().<span class='ident'>load</span>(<span class='ident'>program</span>);
 
-        <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>() {
+        <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>(<span class='ident'>Cycle</span>::<span class='ident'>Indefinetly</span>) {
             <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>true</span>),
             <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
         }
@@ -1013,12 +1071,24 @@
         ]);
         <span class='kw'>let</span> <span class='ident'>node</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>Node</span>::<span class='ident'>new</span>().<span class='ident'>set_up</span>(<span class='ident'>Port</span>::<span class='ident'>new</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1</span>, <span class='number'>2</span>])).<span class='ident'>load</span>(<span class='ident'>program</span>);
 
-        <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>() {
+        <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>(<span class='ident'>Cycle</span>::<span class='ident'>Indefinetly</span>) {
             <span class='prelude-val'>Ok</span>(<span class='ident'>result_node</span>) <span class='op'>=&gt;</span>
                 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>Port</span>::<span class='ident'>with</span>(<span class='macro'>vec</span><span class='macro'>!</span>[], <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>3</span>, <span class='number'>7</span>]), <span class='ident'>result_node</span>.<span class='ident'>down</span>),
             <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
         }
     }
+
+    <span class='attribute'>#[<span class='ident'>test</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>node_should_timeout_execution_program_when_cycles_are_restricted</span>() {
+        <span class='kw'>let</span> <span class='ident'>program</span>: <span class='ident'>Program</span> <span class='op'>=</span> <span class='ident'>Program</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>Instruction</span>::<span class='ident'>NOP</span>]);
+        <span class='kw'>let</span> <span class='ident'>node</span>: <span class='ident'>Node</span> <span class='op'>=</span> <span class='ident'>Node</span>::<span class='ident'>new</span>().<span class='ident'>set_up</span>(<span class='ident'>Port</span>::<span class='ident'>new</span>(<span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1</span>, <span class='number'>2</span>])).<span class='ident'>load</span>(<span class='ident'>program</span>);
+
+        <span class='kw'>match</span> <span class='ident'>node</span>.<span class='ident'>run</span>(<span class='ident'>Cycle</span>::<span class='ident'>Maximum</span>(<span class='number'>100</span>)) {
+            <span class='prelude-val'>Ok</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>),
+            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>true</span>),
+        }
+    }
+
 }
 
 </pre>
