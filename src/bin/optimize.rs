@@ -34,7 +34,9 @@ fn main() {
 
     let node: Node = Node::new().set_up(Port::new(to_vec(doc["input"].as_vec())));
     let expected_output: Vec<i32> = to_vec(doc["output"].as_vec());
-    let config: Config = Config::new(10, 3);
+    let config: Config = Config::new(
+        doc["maximum_cycle"].as_i64().unwrap() as u32,
+        doc["maximum_program_length"].as_i64().unwrap() as usize);
 
     match optimize(node, expected_output, config) {
         Some(program) => println!("{:?}", program),
