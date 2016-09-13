@@ -2,5 +2,6 @@
     "index.md",
     "tis-100.md",
     "super-optimization.md",
-    "instructions.md"
+    "instructions.md",
+    "registers-and-ports.md"
 ]
