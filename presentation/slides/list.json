@@ -6,5 +6,6 @@
     "super-optimization.md",
     "node.md",
     "program.md",
-    "running.md"
+    "running.md",
+    "programiterator.md"
 ]
