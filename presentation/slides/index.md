@@ -1,2 +1,2 @@
 
-# Super-optimazation for TIS-100
+# Super-optimization for TIS-100
