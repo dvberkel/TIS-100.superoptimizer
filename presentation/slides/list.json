@@ -4,5 +4,6 @@
     "registers-and-ports.md",
     "instructions.md",
     "super-optimization.md",
-    "node.md"
+    "node.md",
+    "program.md"
 ]
