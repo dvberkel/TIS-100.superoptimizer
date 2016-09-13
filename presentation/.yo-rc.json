@@ -1,0 +1,11 @@
+{
+  "generator-reveal": {
+    "presentationTitle": "Superoptimazation for TIS-100",
+    "packageVersion": "1.0.0",
+    "revealTheme": "night",
+    "useSass": false,
+    "deployToGithubPages": true,
+    "githubUsername": "dvberkel",
+    "githubRepository": "TIS-100.superoptimizer"
+  }
+}
