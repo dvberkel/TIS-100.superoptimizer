@@ -1,7 +1,7 @@
 [
     "index.md",
     "tis-100.md",
-    "super-optimization.md",
+    "registers-and-ports.md",
     "instructions.md",
-    "registers-and-ports.md"
+    "super-optimization.md"
 ]
