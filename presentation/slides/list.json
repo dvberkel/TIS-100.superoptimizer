@@ -3,5 +3,6 @@
     "tis-100.md",
     "registers-and-ports.md",
     "instructions.md",
-    "super-optimization.md"
+    "super-optimization.md",
+    "node.md"
 ]
