@@ -3,5 +3,3 @@
 * NIL
 * UP
 * DOWN
-* LEFT
-* RIGHT
