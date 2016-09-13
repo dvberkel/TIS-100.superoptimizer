@@ -7,5 +7,6 @@
     "node.md",
     "program.md",
     "running.md",
-    "programiterator.md"
+    "programiterator.md",
+    "programiterator-implementation.md"
 ]
