@@ -1,3 +1,12 @@
+h1, h2, ul, pre {
+    background-color: rgb(63,63,63);
+}
+
+ul {
+    list-style-type: none !important;
+    padding: 10px !important;
+}
+
 video#background-video {
     position: fixed;
     top: 50%;
